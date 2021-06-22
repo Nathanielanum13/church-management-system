@@ -1,0 +1,32 @@
+{
+  "services" : {
+    "data": [
+      {
+        "id": "97ee89f9-9df8-425f-b7eb-1480cdd3f5d4",
+        "name": "Third Service",
+        "time": "06:07",
+        "day": "FRIDAY",
+        "numberOfSeats": "200",
+        "durationInMinutes": "80",
+        "createdOn": "2021-04-28 17:31:14.662825",
+        "updatedOn": "2021-04-28 17:31:14.662825"
+      },
+      {
+        "id": "c5522492-6ca1-4980-bc70-0504a072b18c",
+        "name": "Second Service",
+        "time": "05:07",
+        "day": "SATURDAY",
+        "numberOfSeats": "200",
+        "durationInMinutes": "80",
+        "createdOn": "2021-04-28 17:26:58.991084",
+        "updatedOn": "2021-04-28 17:26:58.991084"
+      }
+    ],
+    "meta": {
+      "timestamp": "2021-05-16 13:32:22",
+      "transactionId": "ddd49ab5-f868-423e-bd06-3e493e1db01a",
+      "traceId": "b3d16f0b-8d51-4ecd-b8b4-f8a890bd26d2",
+      "status": "SUCCESSFUL"
+    }
+  }
+}
