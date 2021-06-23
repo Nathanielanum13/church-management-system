@@ -2,30 +2,58 @@
   <div class="church-management">
     <div class="tab">
       <div class="tab-menu">
-        <div class="tab-menu-item">
-          <label for="manage-services" class="wave active">Manage Services</label>
-          <input type="checkbox" id="manage-services">
+        <div class="tab-menu-item" @click="currentTab = 1">
+          <input type="radio" name="tab-menu-item" checked id="manage-services" value="manage-services">
+          <label for="manage-services" class="wave">Manage Services</label>
+          <span></span>
         </div>
-        <div class="tab-menu-item">
+        <div class="tab-menu-item" @click="currentTab = 2">
+          <input type="radio" name="tab-menu-item" id="manage-congregants" value="manage-congregants">
           <label for="manage-congregants" class="wave">Manage Congregants</label>
-          <input type="checkbox" id="manage-congregants">
+          <span></span>
         </div>
-        <div class="tab-menu-item">
+        <div class="tab-menu-item" @click="currentTab = 3">
+          <input type="radio" name="tab-menu-item" id="manage-bookings" value="manage-bookings">
           <label for="manage-bookings" class="wave">Manage Bookings</label>
-          <input type="checkbox" id="manage-bookings">
+          <span></span>
         </div>
-        <div class="tab-menu-item">
+        <div class="tab-menu-item" @click="currentTab = 4">
+          <input type="radio" name="tab-menu-item" id="reports" value="reports">
           <label for="reports" class="wave">Reports</label>
-          <input type="checkbox" id="reports">
+          <span></span>
         </div>
+      </div>
+      <div class="tab-content">
+        <div class="tab-content-tab" :style="currentTab === 1 ? 'display: block' : ''"><ManageServices /></div>
+        <div class="tab-content-tab" :style="currentTab === 2 ? 'display: block' : ''"><ManageCongregants /></div>
+        <div class="tab-content-tab" :style="currentTab === 3 ? 'display: block' : ''"><ManageBookings /></div>
+        <div class="tab-content-tab" :style="currentTab === 4 ? 'display: block' : ''"><Reports /></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue'
+import ManageServices from "@/components/ManageServices";
+import ManageCongregants from "@/components/ManageCongregants";
+import ManageBookings from "@/components/ManageBookings";
+import Reports from "@/components/Reports";
+
 export default {
-  name: "ChurchManagement"
+  name: "ChurchManagement",
+  components: {
+    ManageServices,
+    ManageCongregants,
+    ManageBookings,
+    Reports
+  },
+  setup() {
+    const currentTab = ref(1)
+    return {
+      currentTab
+    }
+  }
 }
 </script>
 
@@ -49,6 +77,16 @@ export default {
 
         color: #656565;
 
+        &:not(:hover) > .tab-menu-item > label {
+          opacity: 0.3;
+          transition: opacity 150ms ease-out;
+        }
+
+        &:hover > .tab-menu-item > label {
+          opacity: 1;
+          transition: opacity 150ms ease-in;
+        }
+
         .tab-menu-item {
           flex: 1 1 calc(100% / 4);
           position: relative;
@@ -69,20 +107,46 @@ export default {
               cursor: pointer;
             }
           }
-          input[type="checkbox"] {
+          input[type="radio"] {
             display: inline-block;
             position: absolute;
 
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            //opacity: 0;
+            opacity: 0;
             pointer-events: none;
           }
         }
 
-        .tab-menu-item:nth-child(n) > input[type="checkbox"]:checked {
-          opacity: 0;
+        .tab-menu-item > span {
+          width: 100%;
+          height: 100%;
+          transform: scaleX(0);
+          border-bottom: 2px solid color(primary);
+        }
+
+        .tab-menu-item:nth-child(n) > input[type="radio"]:not(:checked) ~ span {
+          transform: scaleX(0);
+          display: block;
+          transition: transform 150ms ease-in;
+        }
+        .tab-menu-item:nth-child(n) > input[type="radio"]:checked ~ span {
+          transform: scaleX(1);
+          display: block;
+          transition: transform 150ms ease-in;
+        }
+        .tab-menu-item:nth-child(n) > input[type="radio"]:checked + label {
+          opacity: 1;
+        }
+      }
+
+      .tab-content {
+        width: 100%;
+        height: inherit;
+
+        .tab-content-tab {
+          display: none;
         }
       }
     }

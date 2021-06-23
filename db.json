@@ -20,6 +20,106 @@
         "durationInMinutes": "80",
         "createdOn": "2021-04-28 17:26:58.991084",
         "updatedOn": "2021-04-28 17:26:58.991084"
+      },
+      {
+        "id": "97ee89f9-9df8-425f-b7eb-1480cdd3f5d4",
+        "name": "Bible",
+        "time": "06:07",
+        "day": "MONDAY",
+        "numberOfSeats": "20",
+        "durationInMinutes": "10",
+        "createdOn": "2021-04-28 17:31:14.662825",
+        "updatedOn": "2021-04-28 17:31:14.662825"
+      },
+      {
+        "id": "c5522492-6ca1-4980-bc70-0504a072b18c",
+        "name": "Prayer Service",
+        "time": "05:07",
+        "day": "SATURDAY",
+        "numberOfSeats": "200",
+        "durationInMinutes": "80",
+        "createdOn": "2021-04-28 17:26:58.991084",
+        "updatedOn": "2021-04-28 17:26:58.991084"
+      },
+      {
+        "id": "97ee89f9-9df8-425f-b7eb-1480cdd3f5d4",
+        "name": "Communion Service dffdsddfgfdgd",
+        "time": "06:07",
+        "day": "SUNDAY",
+        "numberOfSeats": "200",
+        "durationInMinutes": "80",
+        "createdOn": "2021-04-28 17:31:14.662825",
+        "updatedOn": "2021-04-28 17:31:14.662825"
+      },
+      {
+        "id": "c5522492-6ca1-4980-bc70-0504a072b18c",
+        "name": "Marriage Ceremony",
+        "time": "05:07",
+        "day": "SATURDAY",
+        "numberOfSeats": "250",
+        "durationInMinutes": "80",
+        "createdOn": "2021-04-28 17:26:58.991084",
+        "updatedOn": "2021-04-28 17:26:58.991084"
+      },
+      {
+        "id": "97ee89f9-9df8-425f-b7eb-1480cdd3f5d4",
+        "name": "Third Service",
+        "time": "06:07",
+        "day": "FRIDAY",
+        "numberOfSeats": "200",
+        "durationInMinutes": "80",
+        "createdOn": "2021-04-28 17:31:14.662825",
+        "updatedOn": "2021-04-28 17:31:14.662825"
+      },
+      {
+        "id": "c5522492-6ca1-4980-bc70-0504a072b18c",
+        "name": "Second Service",
+        "time": "05:07",
+        "day": "SATURDAY",
+        "numberOfSeats": "200",
+        "durationInMinutes": "80",
+        "createdOn": "2021-04-28 17:26:58.991084",
+        "updatedOn": "2021-04-28 17:26:58.991084"
+      },
+      {
+        "id": "97ee89f9-9df8-425f-b7eb-1480cdd3f5d4",
+        "name": "Bible",
+        "time": "06:07",
+        "day": "MONDAY",
+        "numberOfSeats": "20",
+        "durationInMinutes": "10",
+        "createdOn": "2021-04-28 17:31:14.662825",
+        "updatedOn": "2021-04-28 17:31:14.662825"
+      },
+      {
+        "id": "c5522492-6ca1-4980-bc70-0504a072b18c",
+        "name": "Prayer Service",
+        "time": "05:07",
+        "day": "SATURDAY",
+        "numberOfSeats": "200",
+        "durationInMinutes": "80",
+        "createdOn": "2021-04-28 17:26:58.991084",
+        "updatedOn": "2021-04-28 17:26:58.991084"
+      },
+      {
+        "id": "97ee89f9-9df8-425f-b7eb-1480cdd3f5d4",
+        "name": "Communion Service dffdsddfgfdgd",
+        "time": "06:07",
+        "day": "SUNDAY",
+        "numberOfSeats": "200",
+        "durationInMinutes": "80",
+        "createdOn": "2021-04-28 17:31:14.662825",
+        "updatedOn": "2021-04-28 17:31:14.662825"
+      },
+      {
+        "id": "c5522492-6ca1-4980-bc70-0504a072b18c",
+        "name": "Marriage Ceremony",
+        "time": "05:07",
+        "day": "SATURDAY",
+        "numberOfSeats": "250",
+        "durationInMinutes": "80",
+        "createdOn": "2021-04-28 17:26:58.991084",
+        "updatedOn": "2021-04-28 17:26:58.991084"
       }
     ],
     "meta": {

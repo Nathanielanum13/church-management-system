@@ -8,14 +8,14 @@ const routes = [
     component: Home,
     children: [
       {
-        path: '/dashboard',
+        path: '/',
         name: 'Dashboard',
-        component: () => import('../views/Dashboard.vue')
+        component: () => import('../views/Dashboard'),
       },
       {
         path: '/church_management',
         name: 'Church Management',
-        component: () => import('../views/ChurchManagement')
+        component: () => import('../views/ChurchManagement'),
       }
     ]
   }

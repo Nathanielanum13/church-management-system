@@ -3,6 +3,7 @@ import {ref} from 'vue'
 const allServices = ref([])
 export default function useService() {
     // Create services
+
     // Fetch all services
     const fetchAllServices = async () => {
         try {

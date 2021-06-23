@@ -1,16 +1,16 @@
 <template>
   <div ref="main" class="main">
-    <div ref="drawer" :style="toggleState ? 'border-right: 1px solid #80808010' : ''" class="drawer">
+    <div ref="drawer" :style="toggleState ? 'border-right: 1px solid #80808030' : ''" class="drawer" id="drawer">
       <div :style="toggleState ? 'padding : 1rem; margin-block-start: 25vh' : ''" class="drawer-content">
          <div v-if="!toggleState" class="profile">
-          <img alt="church-icon" class="profile-image" src="../assets/img/users/user-admin-0.png">
+          <img alt="church-icon" class="profile-image" src="../assets/img/users/user-admin-3.jpg">
           <div class="profile-name">Nathaniel Anum Adjah</div>
           <div class="church-group">
-            PCG
+            Papase Presby
           </div>
         </div>
         <div class="navigation" role="navigation">
-          <BaseNavigation :class="showTooltip" data-tooltip="Home" to="dashboard">
+          <BaseNavigation :class="showTooltip" data-tooltip="Home">
             <template v-slot:icon>
               <i :class="enlargeIcon" class="ri-home-4-fill"></i>
             </template>
@@ -41,7 +41,7 @@
             </template>
             <span :style="showLabel">User Management</span>
           </BaseNavigation>
-          <BaseNavigation :class="showTooltip" data-tooltip="Church Management" to="church_management">
+          <BaseNavigation :class="showTooltip" data-tooltip="Church Management" to="/church_management">
             <template v-slot:icon>
               <i :class="enlargeIcon" class="ri-store-2-fill"></i>
             </template>
@@ -180,12 +180,12 @@ export default {
         .church-group {
           @include cut-text;
           text-transform: uppercase;
-          font-size: 105%;
+          font-size: 110%;
           margin-block-start: .3rem;
           text-align: center;
 
-          font-weight: bold;
-          color: #80808090;
+          font-weight: bolder;
+          color: #000;
         }
       }
 

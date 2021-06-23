@@ -1,5 +1,5 @@
 <template>
-  <div v-bind="$attrs" @click="$router.push(to)" :class="['list', $route.path === `/${to}` ? 'active' : '']">
+  <div v-bind="$attrs" @click="$router.push(to || '/')" :class="['list', $route.path === `${to}` ? 'active' : '']">
     <div class="list-icon">
       <div class="icon">
         <slot name="icon"></slot>

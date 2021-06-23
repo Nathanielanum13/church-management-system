@@ -41,6 +41,38 @@ $theme: (
   box-sizing: border-box;
 }
 
+[data-tooltip-text] {
+  position: relative;
+
+  &:hover {
+    &::after {
+      display: block;
+    }
+  }
+
+  &::after {
+    display: none;
+    padding: .5rem 1rem;
+    background-color: color(primary);
+    color: color(lighter);
+    border-radius: .25rem;
+
+    width: max-content;
+    height: auto;
+
+    position: absolute;
+    top: 125%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    content: attr(data-tooltip-text);
+
+    z-index: 10;
+
+  }
+}
+
 body, #app {
   margin: 0;
   padding: 0;
@@ -282,6 +314,43 @@ body, #app {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@mixin center-self {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin base-button {
+  padding: .75rem 1rem;
+  background-color: color(primary);
+  color: color(lighter);
+
+  outline: none;
+  border: none;
+
+  border-radius: .25rem;
+  font-size: 1.1rem;
+
+  &:hover {
+    cursor: pointer;
+    background-color: lighten(color(primary), 5);
+    transition: all 150ms ease-in;
+  }
+  &:not(:hover) {
+    background-color: color(primary);
+    transition: all 150ms ease-out;
+  }
+}
+
+@mixin circle($side) {
+  width: $side;
+  height: $side;
+  border-radius: 50%;
+  text-align: center;
+  @include center;
 }
 
 /*Base media queries*/
