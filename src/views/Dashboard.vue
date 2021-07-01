@@ -111,7 +111,7 @@
             <div class="second-link">
               <div :class="['link-box', 'wave', 'new', tutorialState === 'false' ? 'flip-fade': '']"
                    data-tutorial="Create church services and more">
-                <span class="ri-store-2-fill i"></span>
+                <span class="ri-building-2-fill i"></span>
                 <span class="link-text">Church Mgt.</span>
               </div>
             </div>

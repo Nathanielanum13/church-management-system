@@ -7,6 +7,9 @@ $extra-large-screen: 1200px;
 $foreground-layer: -1;
 $background-layer: 1;
 $first-layer: 10;
+$drawer-layer: 60;
+$second-layer: 110;
+$third-layer: 210;
 
 $theme: (
         light: hsl(0, 0%, 97%),
@@ -16,12 +19,16 @@ $theme: (
         primary-muted: #4ca6a8,
         primary: #178082,
         primary-lighter: #17808240,
+        primary-light: #17808270,
         secondary: #6f4fd2,
         secondary-lighter: #6f4fd240,
+        secondary-light: #6f4fd270,
         success: #8fe28b,
         success-lighter: #8fe28b40,
+        success-light: #8fe28b70,
         danger: #ee7b59,
-        danger-lighter: #ee7b5940
+        danger-lighter: #ee7b5940,
+        danger-light: #ee7b5970
 );
 
 @function color($color) {
@@ -79,7 +86,7 @@ body, #app {
 
   width: 100%;
   height: 100vh;
-
+  
   font-family: "Roboto Light", Product Sans, monospace;
 }
 
@@ -116,6 +123,16 @@ body, #app {
 
 .danger {
   background-color: color(danger-lighter);
+}
+
+code {
+  padding: .25rem .75rem;
+  border-radius: .25rem;
+  background-color: #80808090;
+  color: color(light);
+  display: block;
+  width: max-content;
+  margin-block-start: .5rem;
 }
 
 .wave {
@@ -200,6 +217,36 @@ body, #app {
 }
 
 /*Base Animations*/
+/*.slide-from-right-enter-from {
+  right: -50% !important;
+}
+.slide-from-right-enter-to {
+  right: 0 !important;
+}
+.slide-from-right-leave-from {
+  right: 0 !important;
+}
+.slide-from-right-leave-to {
+  right: -50% !important;
+}
+.slide-from-right-leave-active,
+.slide-from-right-enter-active {
+  transition: right 150ms ease-in;
+}*/
+.slide-from-right-leave-active {
+  animation: slide-from-right 150ms ease-in 1 forwards reverse;
+}
+.slide-from-right-enter-active {
+  animation: slide-from-right 150ms ease-in 1 forwards;
+}
+@keyframes slide-from-right {
+  from {
+    right: -50% !important;
+  }
+  to {
+    right: 0 !important;
+  }
+}
 .intro-enter-from {
   opacity: 0;
 }
@@ -219,6 +266,28 @@ body, #app {
 
 .intro-leave-to {
   opacity: 0;
+}
+
+.fade-and-scale-enter-from {
+  opacity: 0;
+  transform: scale(0, 0);
+}
+.fade-and-scale-enter-to {
+  opacity: 1;
+  transform: scale(.2, .2);
+}
+.fade-and-scale-leave-from {
+  opacity: 1;
+  transform: scale(.2, .2);
+}
+.fade-and-scale-leave-to {
+  opacity: 0;
+  transform: scale(0, 0);
+}
+
+.fade-and-scale-leave-active,
+.fade-and-scale-enter-active{
+  transition: all 150ms ease-out;
 }
 
 @keyframes slide-down {

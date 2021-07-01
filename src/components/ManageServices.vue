@@ -1,5 +1,5 @@
 <template>
-  <div class="manage-services">
+  <div class="manage-services" id="manage-services-app">
     <section class="all-services-section">
       <div class="all-services">All Services</div>
       <div class="downloads">
@@ -19,24 +19,29 @@
       <div class="services-header-options">
         <div class="data-per-page">
           <span>Number per page</span>
-          <input v-model="numberPerPage" max="50" min="1" type="number">
+          <input v-model.number="numberPerPage" max="50" min="1" type="number">
         </div>
         <div class="fetch-data">
-          <button type="button" class="wave" @click="fetchServices">Fetch Services</button>
+          <button class="wave" type="button" @click="fetchServices">Fetch Services</button>
         </div>
         <div class="refresh-data">
-          <button type="button" class="wave" @click="fetchServices">Refresh</button>
+          <button :class="['wave', allServices.length === 0 ? 'muted' : '']" type="button" @click="fetchServices">
+            Refresh
+          </button>
         </div>
         <div class="add-data">
-          <button type="button" class="wave">+ Create New Service</button>
+          <button class="wave" type="button" @click="toggleCreateNewServicePanel">+ Create New Service</button>
         </div>
-        <div class="show">
-          <span>Showing 1 to 4 of 5 entries</span>
+        <div class="show" v-if="allServices.length !== 0">
+          <span>Showing {{ start }} to {{ ending }} of {{ allServices.length }} entries</span>
         </div>
       </div>
       <template v-if="allServices.length === 0">
         <div v-if="!loading" class="no-data-action">
-          <span class="ri-file-search-fill"></span>
+          <span v-if="!error" class="ri-file-search-fill"></span>
+          <span v-if="!error" class="no-data-message">Fetch Services</span>
+          <span v-if="error" class="ri-error-warning-fill error"></span>
+          <span v-if="error" class="error-message">Something went wrong <br>- Check internet connection</span>
         </div>
         <div v-if="loading" class="loading-data-action">
           <div v-for="data of loadingData" :key="data" class="loading">
@@ -58,7 +63,8 @@
             <div class="number-of-seats"><span data-tooltip-text="Number Of Seats">Seats</span></div>
             <div class="actions"></div>
           </div>
-          <div v-for="service of allServices" :key="service.id" class="data">
+          <div v-for="service of allServices.slice((currentPage - 1) * numberPerPage, currentPage * numberPerPage)"
+               :key="service.id" class="data">
             <div class="service-icon">
               <div :class="['icon', getColor(service.name)]">{{ getIcon(service.name) }}</div>
             </div>
@@ -70,35 +76,74 @@
             <div class="actions">
               <span class="wave"><i class="ri-more-2-fill"></i></span>
               <span class="wave"><i class="ri-pencil-fill"></i></span>
-              <span class="wave"><i class="ri-delete-bin-3-fill"></i></span>
+              <span class="wave" @click="toggleModal($event, service.id)"><i class="ri-subtract-fill"></i></span>
             </div>
           </div>
         </div>
       </template>
     </section>
-    <section class="pagination">
+    <section :style="allServices.length === 0 ? 'display: none' : ''" class="pagination">
+      <button :class="['prev', 'wave', currentPage === 1 ? 'muted' : '']" @click="prev">Previous</button>
       <div class="pages">
-        <span v-for="page of pages()" :key="page" class="page">{{ page }}</span>
+        <span v-for="page of pages()" :key="page" :class="['page', page === currentPage ? 'active' : '']"
+              @click="currentPage = page">{{ page }}</span>
       </div>
+      <button :class="['next', 'wave', currentPage === maxPage ? 'muted' : '']" @click="next">Next</button>
     </section>
   </div>
+  <transition name="fade-and-scale">
+    <section class="modal" v-if="showModal" ref="modal" :style="[`left: ${xPosition + 'px'}`, `top: ${yPosition + 'px'}`]">
+      <BaseModal @confirm="removeService">
+        <template v-slot:header>Delete Alert</template>
+        <template v-slot:body>
+          Are you sure you want to Delete? <code>{{ targetServiceName }}</code>
+        </template>
+      </BaseModal>
+    </section>
+  </transition>
+  <transition name="slide-from-right">
+    <section v-if="showPanel" class="create-new-service"></section>
+  </transition>
 </template>
 
 <script>
 import useService from "@/services/church-management-services/useServicesFactory";
-import {ref} from "vue"
+import {computed, ref, watch} from "vue"
+import BaseModal from "@/components/BaseModal";
 
 export default {
   name: "ManageServices",
+  components: {
+    BaseModal
+  },
   setup() {
-    const {fetchAllServices} = useService()
-    const loading = ref(false)
+    const {fetchAllServices, deleteService} = useService()
     const allServices = ref([])
+
+    const loading = ref(false)
     const loadingData = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    const error = ref(false)
+
     const fetchServices = async () => {
       allServices.value = []
       loading.value = true
-      await fetchAllServices().then((res) => allServices.value = res).then(() => loading.value = false)
+      await fetchAllServices()
+          .then((res) => allServices.value = res)
+          .then((_) => loading.value = false)
+          .catch((_) => {
+            loading.value = false
+            error.value = true
+          })
+    }
+
+    // Deleting a service
+    const deleting = ref(false)
+    const removeService = async () => {
+      deleting.value = true
+      await deleteService(targetServiceId.value)
+          .then((_) => deleting.value = false)
+          .then((_) => closeModal())
+          .then((_) => allServices.value = allServices.value.filter((service) => service.id !== targetServiceId.value))
     }
     // Pagination
     const currentPage = ref(1)
@@ -114,23 +159,108 @@ export default {
       return allPages
     }
 
+    const prev = () => {
+      if (currentPage.value === 1) return
+      --currentPage.value
+
+    }
+    const next = () => {
+      if (currentPage.value === maxPage.value) return
+      ++currentPage.value
+    }
+
+    const start = computed(() => (currentPage.value - 1) * numberPerPage.value + 1)
+    const ending = computed(() => ((currentPage.value - 1) * numberPerPage.value) + allServices.value.slice((currentPage.value - 1) * numberPerPage.value, currentPage.value * numberPerPage.value).length)
+
+    watch(numberPerPage, () => {
+      currentPage.value = 1
+    })
+    // End of Pagination
+
+
     const getIcon = (str) => {
       return str.substring(0, 1)
     }
     const getColor = (str) => {
-      if (str.length < 10) return 'green'
-      if (str.length < 15 && str.length > 10) return 'danger'
+      if (str.length < 15) return 'green'
+      if (str.length < 20 && str.length > 15) return 'danger'
       return 'violet'
+    }
+
+    // Modal functionalities
+    const modal = ref(null)
+    const showModal = ref(false)
+    const xPosition = ref(0)
+    const yPosition = ref(0)
+    const targetServiceId = ref(null)
+    const targetServiceName = ref(null)
+
+
+    const toggleModal = (e, serviceId) => {
+      showModal.value = !showModal.value
+
+      xPosition.value = e.clientX;
+      yPosition.value = e.clientY;
+
+      targetServiceId.value = serviceId
+      targetServiceName.value = allServices.value.filter((service) => service.id === serviceId)[0].name
+
+      if (showModal.value) {
+        let targetArea = document.getElementById("manage-services-app")
+        targetArea.style.filter = 'brightness(.95) blur(5px)'
+        for(let child of targetArea.children) {
+          child.style.pointerEvents = "none"
+        }
+        setTimeout(closeModalOnClick, 100)
+      }
+    }
+
+    const closeModalOnClick = () => {
+      document.getElementById("manage-services-app").addEventListener("click", closeModal)
+    }
+
+    const closeModal = () => {
+      showModal.value = false
+      let targetArea = document.getElementById("manage-services-app")
+      targetArea.style.filter = 'blur(0) brightness(1)';
+      for(let child of targetArea.children) {
+        child.style.pointerEvents = "auto"
+      }
+      targetArea.removeEventListener("click", closeModal)
+    }
+    // End of modal functionalities
+
+    // Create new service
+    const showPanel = ref(false)
+    const toggleCreateNewServicePanel = () => {
+      showPanel.value = !showPanel.value
     }
     return {
       allServices,
       loading,
       loadingData,
       numberPerPage,
+      currentPage,
+      maxPage,
+      start,
+      ending,
+      error,
+      showModal,
+      modal,
+      xPosition,
+      yPosition,
+      targetServiceName,
+      deleting,
+      showPanel,
       fetchServices,
       getIcon,
       getColor,
-      pages
+      pages,
+      prev,
+      next,
+      toggleModal,
+      removeService,
+      toggleCreateNewServicePanel
     }
   }
 }
@@ -144,6 +274,7 @@ export default {
   height: 100%;
 
   padding: 1rem;
+  position: relative;
 
   .all-services-section {
     @include row;
@@ -216,10 +347,28 @@ export default {
     .no-data-action {
       @include center-self;
       @include center;
+      flex-direction: column;
+
+      .no-data-message, .error-message {
+        display: block;
+        font-weight: bold;
+        font-size: 1.2rem !important;
+      }
+      .no-data-message {
+        color: color(primary-light);
+      }
+      .error-message {
+        text-align: center;
+          color: color(danger-light);
+      }
 
       span {
         font-size: 10rem !important;
         color: color(primary-lighter);
+      }
+
+      span.error {
+        color: color(danger-lighter);
       }
     }
 
@@ -377,31 +526,87 @@ export default {
       }
     }
   }
+
   .pagination {
-    width: max-content;
+    width: 100%;
     height: auto;
-    padding: 1rem 2rem;
-    position: fixed;
-    bottom: 5%;
+    padding: 2rem;
+    position: absolute;
+    bottom: 0;
     right: 50%;
     transform: translateX(50%);
+    opacity: 0;
 
-    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    background-color: #ffffff20;
 
     border-radius: .5rem;
+
+    .active {
+      background-color: lighten(color(primary), 10);
+      color: color(lighter) !important;
+      transition: all 150ms ease-in;
+    }
+
+    &:hover {
+      background-color: color(lighter);
+      opacity: 1;
+      transition: all 150ms ease-in;
+    }
+
+    &:not(:hover) {
+      background-color: #ffffff20;
+      opacity: 0;
+      transition: all 1s ease-out;
+    }
+
+    .prev, .next {
+      @include base-button;
+    }
 
     .pages {
       .page {
         padding: .5rem;
-        background-color: #80808015;
+        border: 1px solid #80808015;
         border-radius: .25rem;
         color: color(primary);
-        margin: 0 .25rem;
         font-weight: bold;
 
+        &:hover {
+          background-color: color(primary);
+          color: color(lighter);
+          cursor: pointer;
+        }
+      }
+    }
+
+    button.muted {
+      background-color: #80808050 !important;
+      opacity: .5;
+      pointer-events: none;
+
+      &:hover {
+        cursor: not-allowed !important;
       }
     }
   }
+}
+
+.modal {
+  position: absolute;
+}
+.create-new-service {
+  position: fixed;
+  top: 0;
+  width: 50vw;
+  height: 100vh;
+  right: -50%;
+  background-color: color(primary-lighter);
+  z-index: $drawer-layer;
 }
 
 .loading {
@@ -437,6 +642,16 @@ export default {
     to {
       opacity: .5;
     }
+  }
+}
+
+button.muted {
+  background-color: #80808080 !important;
+  opacity: .7;
+  pointer-events: none;
+
+  &:hover {
+    cursor: not-allowed !important;
   }
 }
 </style>

@@ -43,7 +43,7 @@
           </BaseNavigation>
           <BaseNavigation :class="showTooltip" data-tooltip="Church Management" to="/church_management">
             <template v-slot:icon>
-              <i :class="enlargeIcon" class="ri-store-2-fill"></i>
+              <i :class="enlargeIcon" class="ri-building-2-fill"></i>
             </template>
             <span :style="showLabel">Church Management</span>
           </BaseNavigation>
@@ -93,7 +93,7 @@ export default {
     const toggler = ref(null)
     const drawer = ref(null)
     const main = ref(null)
-    const toggleState = ref(false)
+    const toggleState = ref(true)
 
     const toggleDrawer = () => {
       toggleState.value = !toggleState.value
@@ -139,7 +139,8 @@ export default {
   height: 100vh;
 
   display: grid;
-  grid-template-columns: minmax(200px, 25%) auto;
+  //grid-template-columns: minmax(200px, 25%) auto;
+  grid-template-columns: 5% auto;
 
   .drawer, .main-content {
     height: 100%;
