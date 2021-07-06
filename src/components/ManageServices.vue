@@ -101,9 +101,9 @@
       </BaseModal>
     </section>
   </transition>
-  <transition name="slide-from-right">
-    <section v-if="showPanel" class="create-new-service"></section>
-  </transition>
+  <section :class="['create-new-service', showPanel ? 'show' : '']">
+    <span @click="showPanel = false">A</span>
+  </section>
 </template>
 
 <script>
@@ -207,7 +207,7 @@ export default {
 
       if (showModal.value) {
         let targetArea = document.getElementById("manage-services-app")
-        targetArea.style.filter = 'brightness(.95) blur(5px)'
+        targetArea.style.filter = 'brightness(.95) blur(3px)'
         for(let child of targetArea.children) {
           child.style.pointerEvents = "none"
         }
@@ -234,7 +234,20 @@ export default {
     const showPanel = ref(false)
     const toggleCreateNewServicePanel = () => {
       showPanel.value = !showPanel.value
+
+      if (showPanel.value) {
+        setTimeout(closePanelOnClick, 100)
+      }
     }
+
+    const closePanelOnClick = () => {
+      document.getElementById("manage-services-app").addEventListener("click", closePanel)
+    }
+
+    const  closePanel = () => {
+      showPanel.value = false
+      document.getElementById("manage-services-app").removeEventListener("click", closePanel)
+     }
     return {
       allServices,
       loading,
@@ -599,6 +612,7 @@ export default {
 .modal {
   position: absolute;
 }
+
 .create-new-service {
   position: fixed;
   top: 0;
@@ -607,6 +621,25 @@ export default {
   right: -50%;
   background-color: color(primary-lighter);
   z-index: $drawer-layer;
+  transition: right 500ms;
+
+  backdrop-filter: blur(7px);
+
+  padding: 1rem;
+
+  &.show {
+    right: 0 !important;
+    transition: right 500ms;
+  }
+
+  span {
+    font-weight: bold;
+  }
+
+  @media screen and (max-width: $small-screen) {
+    width: 95vw;
+    right: -100%;
+  }
 }
 
 .loading {
