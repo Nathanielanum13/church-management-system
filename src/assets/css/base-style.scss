@@ -47,6 +47,9 @@ $theme: (
 *, ::before, ::after {
   box-sizing: border-box;
 }
+[draggable] {
+  color: red;
+}
 
 [data-tooltip-text] {
   position: relative;

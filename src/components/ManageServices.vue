@@ -101,8 +101,10 @@
       </BaseModal>
     </section>
   </transition>
-  <section :class="['create-new-service', showPanel ? 'show' : '']">
-    <span @click="showPanel = false">A</span>
+  <section :class="['create-new-service', 'draggable', showPanel ? 'show' : '']">
+    <span @click="closePanel">
+      Lorem ipsum
+    </span>
   </section>
 </template>
 
@@ -195,7 +197,6 @@ export default {
     const targetServiceId = ref(null)
     const targetServiceName = ref(null)
 
-
     const toggleModal = (e, serviceId) => {
       showModal.value = !showModal.value
 
@@ -273,7 +274,8 @@ export default {
       next,
       toggleModal,
       removeService,
-      toggleCreateNewServicePanel
+      toggleCreateNewServicePanel,
+      closePanel
     }
   }
 }
@@ -628,7 +630,7 @@ export default {
   padding: 1rem;
 
   &.show {
-    right: 0 !important;
+    right: 0;
     transition: right 500ms;
   }
 

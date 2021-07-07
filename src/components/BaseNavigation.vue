@@ -31,6 +31,10 @@ export default {
   height: max-content;
 
   @include row;
+
+  justify-content: center;
+  align-items: center;
+
   padding-inline: 0;
 
   .list-icon {

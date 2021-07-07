@@ -1,6 +1,6 @@
 <template>
   <div ref="main" class="main">
-    <div ref="drawer" :style="toggleState ? 'border-right: 1px solid #80808030' : ''" class="drawer" id="drawer">
+    <div ref="drawer" :style="toggleState ? 'border-right: 1px solid #80808030' : ''" :class="['drawer', slideState ? 'slide-show' : '']" id="drawer">
       <div :style="toggleState ? 'padding : 1rem; margin-block-start: 25vh' : ''" class="drawer-content">
          <div v-if="!toggleState" class="profile">
           <img alt="church-icon" class="profile-image" src="../assets/img/users/user-admin-3.jpg">
@@ -67,8 +67,11 @@
         powered by<span class="red">Omni</span>Collect
       </div>
     </div>
-    <div class="main-content">
+    <div class="main-content" id="main-content">
       <div class="search-row">
+        <span class="toggler" @click="slideDrawer">
+          <BaseToggler />
+        </span>
         <BaseSearchInput />
       </div>
       <div class="all">
@@ -81,19 +84,47 @@
 <script>
 import BaseNavigation from "@/components/BaseNavigation";
 import BaseSearchInput from "@/components/BaseSearchInput";
+import BaseToggler from "@/components/BaseToggler";
 import {onMounted, ref, computed} from "vue"
 
 export default {
   name: 'Home',
   components: {
     BaseNavigation,
-    BaseSearchInput
+    BaseSearchInput,
+    BaseToggler
   },
   setup() {
     const toggler = ref(null)
     const drawer = ref(null)
     const main = ref(null)
     const toggleState = ref(true)
+    const slideState = ref(false)
+
+    const slideDrawer = () => {
+      // Show full version of drawer
+      toggleState.value = false
+
+      // Toggle slide state to append css class for
+      // sliding in and out
+      slideState.value = !slideState.value
+
+      // Decrease brightness/visibility a little bit
+      const targetArea = document.getElementById("main-content")
+      targetArea.style.filter = "blur(3px)"
+      setTimeout(closeDrawerOnClick, 100)
+    }
+
+    const closeDrawerOnClick = () => {
+      document.getElementById("main-content").addEventListener("click", closeDrawer)
+    }
+
+    const closeDrawer = () => {
+      slideState.value = false
+      const targetArea = document.getElementById("main-content")
+      targetArea.style.filter = "blur(0)"
+      targetArea.removeEventListener("click", closeDrawer)
+    }
 
     const toggleDrawer = () => {
       toggleState.value = !toggleState.value
@@ -126,7 +157,10 @@ export default {
       toggleState,
       showTooltip,
       enlargeIcon,
-      showLabel
+      showLabel,
+      slideState,
+      toggleDrawer,
+      slideDrawer
     }
   }
 }
@@ -253,6 +287,10 @@ export default {
           transition: margin-left 150ms ease-out;
         }
       }
+
+      @media screen and (max-width: $small-screen) {
+        display: none;
+      }
     }
   }
 
@@ -260,6 +298,17 @@ export default {
     .search-row {
       @include row;
       align-items: center;
+
+      .toggler {
+        display: none;
+
+        @media screen and (max-width: $small-screen){
+          display: block;
+          padding-inline: 1rem;
+          width: 4rem;
+          height: 1.5rem;
+        }
+      }
     }
     .all {
       width: 100%;
@@ -276,8 +325,19 @@ export default {
   @media screen and (max-width: $small-screen) {
     /*grid-template-columns: 100%;*/
     display: block;
+
     .drawer {
-      display: none;
+      position: fixed;
+      top: 0;
+      max-width: 300px;
+      left: -100%;
+      transition: left 250ms ease-in;
+      z-index: $drawer-layer;
+
+      &.slide-show {
+        left: 0;
+        transition: left 250ms ease-in;
+      }
     }
   }
 }
@@ -315,7 +375,7 @@ export default {
       z-index: $first-layer;
       content: attr(data-tooltip);
 
-      transition: all 10s ease-in;
+      /*transition: all 10s ease-in;*/
     }
   }
 }

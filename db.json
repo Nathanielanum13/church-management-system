@@ -11,16 +11,6 @@
       "updatedOn": "2021-04-28 17:31:14.662825"
     },
     {
-      "id": "7",
-      "name": "Third Service",
-      "time": "06:07",
-      "day": "FRIDAY",
-      "numberOfSeats": "200",
-      "durationInMinutes": "80",
-      "createdOn": "2021-04-28 17:31:14.662825",
-      "updatedOn": "2021-04-28 17:31:14.662825"
-    },
-    {
       "id": "9",
       "name": "Choir",
       "time": "06:07",

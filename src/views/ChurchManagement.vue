@@ -34,7 +34,8 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { draggable } from "@/utils/draggableHelperUtils";
 import ManageServices from "@/components/ManageServices";
 import ManageCongregants from "@/components/ManageCongregants";
 import ManageBookings from "@/components/ManageBookings";
@@ -50,6 +51,7 @@ export default {
   },
   setup() {
     const currentTab = ref(1)
+    onMounted(() => draggable())
     return {
       currentTab
     }

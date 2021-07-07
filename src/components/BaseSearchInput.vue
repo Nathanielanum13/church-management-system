@@ -25,7 +25,7 @@ name: "BaseSearchInput"
     .icon {
       position: absolute;
       top: 50%;
-      left: 2%;
+      left: calc(2% + 5px);
 
       font-weight: bold;
       color: #808080;
