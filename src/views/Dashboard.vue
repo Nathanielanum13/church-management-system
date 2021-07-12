@@ -370,6 +370,10 @@ export default {
           color: #65656590;
           flex: 1 1;
           font-weight: bold;
+
+          @media screen and (max-width: $small-screen) {
+            text-align: center;
+          }
         }
 
         .filter {

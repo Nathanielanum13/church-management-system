@@ -5,21 +5,25 @@
         <div class="tab-menu-item" @click="currentTab = 1">
           <input type="radio" name="tab-menu-item" checked id="manage-services" value="manage-services">
           <label for="manage-services" class="wave">Manage Services</label>
+          <label for="manage-services" class="icon" data-tooltip-text="Services"><span class="ri-service-fill"></span></label>
           <span></span>
         </div>
         <div class="tab-menu-item" @click="currentTab = 2">
           <input type="radio" name="tab-menu-item" id="manage-congregants" value="manage-congregants">
           <label for="manage-congregants" class="wave">Manage Congregants</label>
+          <label for="manage-congregants" class="icon" data-tooltip-text="Manage Congregants"><span class="ri-user-2-fill"></span></label>
           <span></span>
         </div>
         <div class="tab-menu-item" @click="currentTab = 3">
           <input type="radio" name="tab-menu-item" id="manage-bookings" value="manage-bookings">
           <label for="manage-bookings" class="wave">Manage Bookings</label>
+          <label for="manage-bookings" class="icon" data-tooltip-text="Manage Bookings"><span class="ri-book-2-fill"></span></label>
           <span></span>
         </div>
         <div class="tab-menu-item" @click="currentTab = 4">
           <input type="radio" name="tab-menu-item" id="reports" value="reports">
           <label for="reports" class="wave">Reports</label>
+          <label for="reports" class="icon" data-tooltip-text="Reports"><span class="ri-file-2-fill"></span></label>
           <span></span>
         </div>
       </div>
@@ -34,8 +38,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
-import { draggable } from "@/utils/draggableHelperUtils";
+import { ref } from 'vue'
 import ManageServices from "@/components/ManageServices";
 import ManageCongregants from "@/components/ManageCongregants";
 import ManageBookings from "@/components/ManageBookings";
@@ -51,7 +54,6 @@ export default {
   },
   setup() {
     const currentTab = ref(1)
-    onMounted(() => draggable())
     return {
       currentTab
     }
@@ -93,6 +95,10 @@ export default {
           flex: 1 1 calc(100% / 4);
           position: relative;
 
+          label.icon {
+            display: none;
+          }
+
           label {
             width: 100%;
             height: 100%;
@@ -108,7 +114,15 @@ export default {
             &:hover {
               cursor: pointer;
             }
+
+            @media screen and (max-width: $medium-screen) {
+              display: none;
+              &.icon {
+                display: flex;
+              }
+            }
           }
+
           input[type="radio"] {
             display: inline-block;
             position: absolute;
@@ -139,6 +153,9 @@ export default {
           transition: transform 150ms ease-in;
         }
         .tab-menu-item:nth-child(n) > input[type="radio"]:checked + label {
+          opacity: 1;
+        }
+        .tab-menu-item:nth-child(n) > input[type="radio"]:checked ~ label.icon {
           opacity: 1;
         }
       }

@@ -102,9 +102,7 @@
     </section>
   </transition>
   <section :class="['create-new-service', 'draggable', showPanel ? 'show' : '']">
-    <span @click="closePanel">
-      Lorem ipsum
-    </span>
+    <CreateService @closepanel="closePanel" />
   </section>
 </template>
 
@@ -113,10 +111,13 @@ import useService from "@/services/church-management-services/useServicesFactory
 import {computed, ref, watch} from "vue"
 import BaseModal from "@/components/BaseModal";
 
+import CreateService from "@/components/CreateService";
+
 export default {
   name: "ManageServices",
   components: {
-    BaseModal
+    BaseModal,
+    CreateService
   },
   setup() {
     const {fetchAllServices, deleteService} = useService()
@@ -146,6 +147,10 @@ export default {
           .then((_) => deleting.value = false)
           .then((_) => closeModal())
           .then((_) => allServices.value = allServices.value.filter((service) => service.id !== targetServiceId.value))
+          .catch(_ => {
+            deleting.value = false
+            closeModal()
+          })
     }
     // Pagination
     const currentPage = ref(1)
@@ -295,6 +300,7 @@ export default {
     @include row;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem 0;
 
     .all-services, .downloads {
       font-size: 1.2rem;
@@ -310,6 +316,10 @@ export default {
         color: color(lighter);
         font-size: 1.05rem;
         border-radius: .25rem;
+
+        @media screen and (max-width: $small-screen) {
+          display: none;
+        }
       }
 
       .download-options {
@@ -392,6 +402,7 @@ export default {
       border: 1px solid #80808020;
       border-radius: .25rem;
       align-items: center;
+      gap: .5rem 0;
 
       .show {
         flex: 1 0 auto;
@@ -620,12 +631,17 @@ export default {
   top: 0;
   width: 50vw;
   height: 100vh;
-  right: -50%;
-  background-color: color(primary-lighter);
+  right: -55%;
+  background-color: color(light);
   z-index: $drawer-layer;
   transition: right 500ms;
 
-  backdrop-filter: blur(7px);
+  box-shadow: 0 0 2rem 1rem #00000015;
+
+  /*@supports (backdrop-filter: blur()) {
+    backdrop-filter: blur(20px);
+    background: color(primary-lighter);
+  }*/
 
   padding: 1rem;
 

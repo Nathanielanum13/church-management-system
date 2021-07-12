@@ -85,7 +85,7 @@
 import BaseNavigation from "@/components/BaseNavigation";
 import BaseSearchInput from "@/components/BaseSearchInput";
 import BaseToggler from "@/components/BaseToggler";
-import {onMounted, ref, computed} from "vue"
+import {onMounted, ref, computed, watch} from "vue"
 
 export default {
   name: 'Home',
@@ -100,6 +100,7 @@ export default {
     const main = ref(null)
     const toggleState = ref(true)
     const slideState = ref(false)
+    const bodyWidth = ref(document.body.clientWidth)
 
     const slideDrawer = () => {
       // Show full version of drawer
@@ -134,6 +135,13 @@ export default {
         main.value.style.animation = 'slide-up 50ms forwards'
       }
     }
+
+    watch(bodyWidth, () => {
+      /*if (bodyWidth.value > 567) {
+        toggleState.value = true
+      }*/
+      console.log(bodyWidth.value)
+    })
 
     onMounted(() => {
       toggler.value.addEventListener("click", () => toggleDrawer())
@@ -330,9 +338,15 @@ export default {
       position: fixed;
       top: 0;
       max-width: 300px;
-      left: -100%;
+      height: 100vh;
+      left: -300px;
       transition: left 250ms ease-in;
       z-index: $drawer-layer;
+
+      @supports (backdrop-filter: blur()) {
+        backdrop-filter: blur(20px);
+        background: color(primary-lighter);
+      }
 
       &.slide-show {
         left: 0;

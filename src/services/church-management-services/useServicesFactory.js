@@ -1,9 +1,11 @@
 import {ref} from 'vue'
+import useResponseHandlers from "@/utils/responseHandlers";
 
 const allServices = ref([])
 export default function useService() {
     // Create services
     // Delete a service
+    const {createResponse} = useResponseHandlers()
     const deleteService = async (serviceId) => {
         try {
             await fetch(`${process.env.VUE_APP_CMS_API}/services/${serviceId}`, {
@@ -15,6 +17,7 @@ export default function useService() {
                 }
             }).then((res) => res.json())
         } catch (e) {
+            createResponse('Failed to delete service', 400)
             throw e
         }
     }
@@ -31,6 +34,7 @@ export default function useService() {
             }).then((res) => res.json()).then((data) => data)
         } catch (e) {
             //TODO Alert system for success and error
+            createResponse('Couldn\'t fetch services. Check connection', 400)
             throw e
         }
         return allServices.value
@@ -42,6 +46,7 @@ export default function useService() {
     }
 
     return {
+        allServices,
         /*Methods*/
         numberOfServices,
         fetchAllServices,
