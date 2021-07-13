@@ -345,7 +345,8 @@ export default {
 
       @supports (backdrop-filter: blur()) {
         backdrop-filter: blur(20px);
-        background: color(primary-lighter);
+        //background: color(primary-lighter);
+        background: #17808220;
       }
 
       &.slide-show {

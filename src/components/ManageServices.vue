@@ -654,7 +654,7 @@ export default {
     font-weight: bold;
   }
 
-  @media screen and (max-width: $small-screen) {
+  @media screen and (max-width: $medium-screen) {
     width: 95vw;
     right: -100%;
   }
