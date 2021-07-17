@@ -325,7 +325,7 @@ export default {
       overflow: hidden scroll;
 
       @media screen and (max-width: $small-screen) {
-        padding: 0 .5rem;
+        padding: 0 0 0 .75rem;
       }
     }
   }

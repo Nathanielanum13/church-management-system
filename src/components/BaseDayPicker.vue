@@ -54,27 +54,13 @@ export default {
     const sunday = ref(false)
 
     const checkInput = (input) => {
-      if (input === 'sunday') {
-        sunday.value = true
-      }
-      if (input === 'monday') {
-        monday.value = true
-      }
-      if (input === 'tuesday') {
-        tuesday.value = true
-      }
-      if (input === 'wednesday') {
-        wednesday.value = true
-      }
-      if (input === 'thursday') {
-        thursday.value = true
-      }
-      if (input === 'friday') {
-        friday.value = true
-      }
-      if (input === 'saturday') {
-        saturday.value = true
-      }
+      if (input === 'sunday') sunday.value = true
+      if (input === 'monday') monday.value = true
+      if (input === 'tuesday') tuesday.value = true
+      if (input === 'wednesday') wednesday.value = true
+      if (input === 'thursday') thursday.value = true
+      if (input === 'friday') friday.value = true
+      if (input === 'saturday') saturday.value = true
     }
 
     watch(userInput, () => checkInput(userInput.value.toLowerCase()))

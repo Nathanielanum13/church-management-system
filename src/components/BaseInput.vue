@@ -5,6 +5,7 @@
     </div>
     <input :type="type"
            v-model="userInput"
+           v-invalid="`invalid`"
            :id="name"
            :style="name === 'service-day' ? 'text-transform: uppercase' : ''" min="1">
   </div>
@@ -31,6 +32,16 @@ export default {
     value: {
       default: "",
       type: String
+    }
+  },
+  directives: {
+    invalid: {
+      /*mounted(el, binding) {
+        el.classList.add(binding.value)
+      }*/
+      /*mounted(el, binding) {
+        if (el.value === "") el.classList.add(binding.value)
+      }*/
     }
   },
   setup(props, { emit }) {
@@ -117,5 +128,12 @@ export default {
     }
   }
 
+  input[type="time"] {
+    appearance: none; // This property is not working
+  }
+
+}
+.invalid {
+  background: color(danger-lighter) !important;
 }
 </style>

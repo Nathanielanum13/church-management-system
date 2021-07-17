@@ -1,9 +1,26 @@
 import {ref} from 'vue'
 import useResponseHandlers from "@/utils/responseHandlers";
 
+
 const allServices = ref([])
 export default function useService() {
     // Create services
+    const createService = async (newService) => {
+        try {
+            await fetch(`${process.env.VUE_APP_CMS_API}/services`, {
+                method: "POST",
+                headers: {
+                    "traceId": "b3d16f0b-8d51-4ecd-b8b4-f8a890bd26d2",
+                    "request-type": "string",
+                    "merchantNamespace": "grey-parrot"
+                },
+                body: {}
+            }).then(res => console.log(res))
+        } catch (e) {
+
+        }
+
+    }
     // Delete a service
     const {createResponse} = useResponseHandlers()
     const deleteService = async (serviceId) => {
@@ -50,6 +67,7 @@ export default function useService() {
         /*Methods*/
         numberOfServices,
         fetchAllServices,
-        deleteService
+        deleteService,
+        createService
     }
 }

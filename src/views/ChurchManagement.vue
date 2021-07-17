@@ -69,6 +69,10 @@ export default {
 
     padding: 1rem;
 
+    @media screen and (max-width: $small-screen) {
+      padding: 0;
+    }
+
     .tab {
       width: 100%;
       height: 100%;

@@ -50,13 +50,18 @@ export default {
 .alert-group {
   position: fixed;
 
-  top: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 2rem;
+  left: 10%;
 
-  z-index: $drawer-layer;
+  z-index: $second-layer;
 
   width: 350px;
+
+  @media screen and (max-width: $small-screen) {
+    top: .5rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
   .alert {
     width: 100%;
