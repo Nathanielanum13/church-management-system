@@ -1,94 +1,44 @@
 {
   "services": [
     {
-      "id": "5",
-      "name": "Evangelism",
-      "time": "06:07",
-      "day": "WEDNESDAY",
-      "numberOfSeats": "200",
-      "durationInMinutes": "80",
-      "createdOn": "2021-04-28 17:31:14.662825",
-      "updatedOn": "2021-04-28 17:31:14.662825"
-    },
-    {
-      "id": "9",
-      "name": "Choir",
-      "time": "06:07",
-      "day": "MONDAY",
-      "numberOfSeats": "20",
-      "durationInMinutes": "10",
-      "createdOn": "2021-04-28 17:31:14.662825",
-      "updatedOn": "2021-04-28 17:31:14.662825"
-    },
-    {
-      "id": "10",
-      "name": "Prayer Service",
-      "time": "05:07",
-      "day": "FRIDAY",
-      "numberOfSeats": "200",
-      "durationInMinutes": "80",
-      "createdOn": "2021-04-28 17:26:58.991084",
-      "updatedOn": "2021-04-28 17:26:58.991084"
-    },
-    {
-      "id": "11",
-      "name": "Communion Service",
-      "time": "06:07",
-      "day": "WEDNESDAY",
-      "numberOfSeats": "200",
-      "durationInMinutes": "80",
-      "createdOn": "2021-04-28 17:31:14.662825",
-      "updatedOn": "2021-04-28 17:31:14.662825"
-    },
-    {
-      "id": "12",
-      "name": "Marriage Ceremony",
-      "time": "05:07",
-      "day": "FRIDAY",
-      "numberOfSeats": "250",
-      "durationInMinutes": "80",
-      "createdOn": "2021-04-28 17:26:58.991084",
-      "updatedOn": "2021-04-28 17:26:58.991084"
-    },
-    {
-      "id": "112",
-      "name": "Sunday Service",
-      "time": "05:07",
-      "day": "SUNDAY",
-      "numberOfSeats": "250",
-      "durationInMinutes": "80",
-      "createdOn": "2021-04-28 17:26:58.991084",
-      "updatedOn": "2021-04-28 17:26:58.991084"
-    },
-    {
-      "id": "128",
-      "name": "Bible Reading",
-      "time": "05:07",
-      "day": "SATURDAY",
-      "numberOfSeats": "250",
-      "durationInMinutes": "80",
-      "createdOn": "2021-04-28 17:26:58.991084",
-      "updatedOn": "2021-04-28 17:26:58.991084"
-    },
-    {
-      "id": "102",
-      "name": "Revival",
-      "time": "05:07",
+      "name": "Naming Ceremony",
+      "time": "09:30",
       "day": "TUESDAY",
-      "numberOfSeats": "250",
-      "durationInMinutes": "80",
-      "createdOn": "2021-04-28 17:26:58.991084",
-      "updatedOn": "2021-04-28 17:26:58.991084"
+      "numberOfSeats": "50",
+      "durationInMinutes": "180",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 4
     },
     {
-      "id": "1211",
-      "name": "Catechist Sendoff",
-      "time": "05:07",
-      "day": "THURSDAY",
-      "numberOfSeats": "250",
-      "durationInMinutes": "80",
-      "createdOn": "2021-04-28 17:26:58.991084",
-      "updatedOn": "2021-04-28 17:26:58.991084"
+      "name": "Monday Service",
+      "time": "10:20",
+      "day": "WEDNESDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "90",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 5
+    },
+    {
+      "name": "Demo Service",
+      "time": "20:15",
+      "day": "TUESDAY",
+      "numberOfSeats": "100",
+      "durationInMinutes": "120",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 6
+    },
+    {
+      "name": "Anum Service",
+      "time": "12:15",
+      "day": "MONDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "120",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 7
     }
   ]
 }

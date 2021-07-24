@@ -78,7 +78,7 @@ $theme: (
 
     content: attr(data-tooltip-text);
 
-    z-index: 10;
+    z-index: $third-layer;
 
   }
 }
@@ -127,6 +127,10 @@ body, #app {
 
 .danger {
   background-color: color(danger-lighter);
+}
+
+.light-primary-color {
+  color: color(primary-light);
 }
 
 code {

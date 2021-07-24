@@ -5,7 +5,8 @@
     </div>
     <input :type="type"
            v-model="userInput"
-           v-invalid="`invalid`"
+           v-validate:required="!userInput ? 'invalid' : ''"
+           :reset="reset"
            :id="name"
            :style="name === 'service-day' ? 'text-transform: uppercase' : ''" min="1">
   </div>
@@ -32,20 +33,38 @@ export default {
     value: {
       default: "",
       type: String
+    },
+    reset: {
+      default: false,
+      type: Boolean
     }
   },
   directives: {
-    invalid: {
+    validate : {
       /*mounted(el, binding) {
         el.classList.add(binding.value)
       }*/
       /*mounted(el, binding) {
         if (el.value === "") el.classList.add(binding.value)
       }*/
+      updated(el, binding) {
+        if (binding.arg === "required") {
+          if (el.value === "") {
+            el.classList.add("invalid")
+            el.setAttribute("placeholder", "This field is required")
+          } else {
+            el.classList.remove("invalid")
+          }
+        }
+        if (el.getAttribute("reset") === "true") {
+          el.classList.remove("invalid")
+          el.removeAttribute("placeholder", "")
+        }
+      }
     }
   },
   setup(props, { emit }) {
-    const { value } = toRefs(props)
+    const { value, reset } = toRefs(props)
     const userInput = ref("")
 
     const setUserInput = () => {
@@ -56,6 +75,9 @@ export default {
 
     watch(userInput, () => emit("day-from-input", userInput.value))
     watch(value, () => setUserInput())
+    watch(reset, () => {
+      if (reset) userInput.value = ''
+    })
 
     return {
       userInput
@@ -134,6 +156,11 @@ export default {
 
 }
 .invalid {
-  background: color(danger-lighter) !important;
+  border: 1px solid color(danger-light) !important;
+
+  &::placeholder {
+    font-weight: normal;
+    color: color(danger);
+  }
 }
 </style>

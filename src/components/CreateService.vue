@@ -57,21 +57,24 @@
       </div>
     </transition>
     <div class="create-service-content" :style="showStatistics === false ? 'max-height: calc(95% - 1rem);' : ''">
-      <form method="POST" @submit.prevent="createNewService">
+      <form method="POST" @submit.prevent="createNewService" novalidate>
         <BaseInput
             type="text"
             label="What name would you like to call this service?"
             name="service-name"
+            :reset="reset"
         />
         <BaseInput
             type="number"
             label="How many seats are reserved for the service?"
             name="service-seats"
+            :reset="reset"
         />
         <BaseInput
             type="time"
             label="When will the service begin?"
             name="service-time"
+            :reset="reset"
         />
         <BaseInput
             type="text"
@@ -79,6 +82,7 @@
             name="service-day"
             :value="value"
             @day-from-input="getDay"
+            :reset="reset"
         />
         <BaseDayPicker
             @day="setDay"
@@ -89,6 +93,7 @@
             label="How long would the service last? - in minutes"
             name="service-duration"
             :value="duration"
+            :reset="reset"
         />
         <BaseSuggestionBox
             :suggestions="suggestions"
@@ -123,6 +128,7 @@ export default {
   },
   setup() {
     const value = ref("")
+    const reset = ref(false)
     const duration = ref("")
     const userInput = ref("")
 
@@ -180,10 +186,12 @@ export default {
 
     const validateDay = ({data}) => {
       let isValid = true
+      data = data.toUpperCase()
+
       if (data === "MONDAY" || data === "TUESDAY" || data === "WEDNESDAY" || data === "THURSDAY" || data === "FRIDAY" || data === "SATURDAY" || data === "SUNDAY") {
         isValid = isValid && true
       } else {
-        createResponse(`DAY is invalid. Please correct  entry`, httpStatusCode.ERROR)
+        createResponse(`DAY is invalid. Please correct entry`, httpStatusCode.ERROR)
         isValid = isValid && false
       }
       return isValid
@@ -197,7 +205,7 @@ export default {
       const serviceName = e.target[0].value
       const numberOfSeats = e.target[1].value
       const serviceTime = e.target[2].value
-      const dayOfService = e.target[3].value
+      const dayOfService = e.target[3].value.toUpperCase()
       const serviceDuration = e.target[11].value
 
       // Validate all input data
@@ -228,22 +236,24 @@ export default {
       let isValidatedForValidDay = validateDay(formData[3])
 
       const newService = {
-        "name": serviceName,
-        "time": serviceTime,
-        "day": dayOfService,
-        "numberOfSeats": numberOfSeats,
-        "durationInMinutes": serviceDuration
+        name: serviceName,
+        time: serviceTime,
+        day: dayOfService,
+        numberOfSeats: numberOfSeats,
+        durationInMinutes: serviceDuration
       }
 
       if (isValidatedForEmptyInput && isValidatedForValidDay) {
         await createService(newService)
             .then(_ => {
               isCreatingService.value = false
-              createResponse("Service was created successfully", httpStatusCode.SUCCESS)
+              // Reset fields
+              reset.value = true
             })
       } else {
         isCreatingService.value = false
       }
+      reset.value = false
     }
 
     return {
@@ -260,6 +270,7 @@ export default {
       duration,
       showStatistics,
       isCreatingService,
+      reset,
       setDay,
       getDay,
       setDuration,

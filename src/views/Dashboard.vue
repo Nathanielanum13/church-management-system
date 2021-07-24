@@ -26,7 +26,7 @@
               </span>
               <span class="title">All Services</span>
             </div>
-            <div class="card-data">{{ numberOfServices() }}</div>
+            <div class="card-data">{{ totalNumberOfServices }}</div>
             <div class="foot-note">4 not activated</div>
           </div>
         </div>
@@ -172,136 +172,25 @@
             </div>
           </div>
         </div>
-        <!--        <div class="reminder-item">
-          <div class="time">11:00am</div>
-          <div class="reminder-list">
-            <div class="line"></div>
-            <div class="reminder-list-item green">
-              <div class="reminder-text">
-                <div class="reminder-title">Prayer Meeting 2</div>
-                <div class="reminder-note">11:00 - 11:45</div>
-              </div>
-              <div class="reminder-list-item-more-section wave">
-                <span class="ri-more-2-fill icon"></span>
-              </div>
-            </div>
-            <div class="reminder-list-item violet">
-              <div class="reminder-text">
-                <div class="reminder-title">Bible Studies 2</div>
-                <div class="reminder-note">10:15 - 10:55</div>
-              </div>
-              <div class="reminder-list-item-more-section wave">
-                <span class="ri-more-2-fill icon"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="reminder-item">
-          <div class="time">12:00pm</div>
-          <div class="reminder-list">
-            <div class="line"></div>
-            <div class="reminder-list-item danger">
-              <div class="reminder-text">
-                <div class="reminder-title">YAF Service</div>
-                <div class="reminder-note">12:00 - 12:30</div>
-              </div>
-              <div class="reminder-list-item-more-section wave">
-                <span class="ri-more-2-fill icon"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="reminder-item">
-          <div class="time">9:00am</div>
-          <div class="reminder-list">
-            <div class="line"></div>
-            <div class="reminder-list-item danger">
-              <div class="reminder-text">
-                <div class="reminder-title">YPG Service</div>
-                <div class="reminder-note">9:00 - 9:30</div>
-              </div>
-              <div class="reminder-list-item-more-section wave">
-                <span class="ri-more-2-fill icon"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="reminder-item">
-          <div class="time">10:00am</div>
-          <div class="reminder-list">
-            <div class="line"></div>
-            <div class="reminder-list-item danger">
-              <div class="reminder-text">
-                <div class="reminder-title">Prayer Meeting</div>
-                <div class="reminder-note">10:00 - 10:45</div>
-              </div>
-              <div class="reminder-list-item-more-section wave">
-                <span class="ri-more-2-fill icon"></span>
-              </div>
-            </div>
-            <div class="reminder-list-item violet">
-              <div class="reminder-text">
-                <div class="reminder-title">Bible Studies</div>
-                <div class="reminder-note">10:15 - 10:55</div>
-              </div>
-              <div class="reminder-list-item-more-section wave">
-                <span class="ri-more-2-fill icon"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="reminder-item">
-          <div class="time">11:00am</div>
-          <div class="reminder-list">
-            <div class="line"></div>
-            <div class="reminder-list-item green">
-              <div class="reminder-text">
-                <div class="reminder-title">Prayer Meeting 2</div>
-                <div class="reminder-note">11:00 - 11:45</div>
-              </div>
-              <div class="reminder-list-item-more-section wave">
-                <span class="ri-more-2-fill icon"></span>
-              </div>
-            </div>
-            <div class="reminder-list-item violet">
-              <div class="reminder-text">
-                <div class="reminder-title">Bible Studies 2</div>
-                <div class="reminder-note">10:15 - 10:55</div>
-              </div>
-              <div class="reminder-list-item-more-section wave">
-                <span class="ri-more-2-fill icon"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="reminder-item">
-          <div class="time">12:00pm</div>
-          <div class="reminder-list">
-            <div class="line"></div>
-            <div class="reminder-list-item danger">
-              <div class="reminder-text">
-                <div class="reminder-title">YAF Service</div>
-                <div class="reminder-note">12:00 - 12:30</div>
-              </div>
-              <div class="reminder-list-item-more-section wave">
-                <span class="ri-more-2-fill icon"></span>
-              </div>
-            </div>
-          </div>
-        </div>-->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import {ref} from 'vue'
+import {ref, onMounted} from 'vue'
 import useService from '../services/church-management-services/useServicesFactory'
 
 export default {
   name: "Dashboard",
   setup() {
     const {numberOfServices} = useService()
+    const totalNumberOfServices = ref(0)
+
+    onMounted(async () => {
+      await numberOfServices().then((value) => totalNumberOfServices.value = value)
+    })
+
     const tutorialState = ref(window.localStorage['tutorial-key'])
     const slides = ref(null)
     const slidePosition = ref(0)
@@ -332,7 +221,7 @@ export default {
       nextSlide,
       prevSlide,
       closeTutorial,
-      numberOfServices
+      totalNumberOfServices
     }
   }
 }

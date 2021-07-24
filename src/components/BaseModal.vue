@@ -23,7 +23,6 @@ export default {
     const showProgress = ref(false)
     const confirmModal = () => {
       showProgress.value = true
-      console.log('a')
     }
     return {
       showProgress,
@@ -59,7 +58,7 @@ export default {
 
     border-radius: .5rem .5rem 0 0;
     font-size: 1.2rem;
-    background-color: #80808090;
+    background-color: #808080;
     color: color(light);
     font-weight: bold;
   }

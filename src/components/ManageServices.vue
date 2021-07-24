@@ -16,7 +16,10 @@
       </div>
     </section>
     <section class="services-table">
-      <div class="services-header-options">
+      <div :class="['services-header-options', isLocked ? 'sticky-top' : '']">
+        <div class="lock-header" @click="toggleLock">
+          <span :class="[ isLocked ? 'ri-lock-line' : 'ri-lock-unlock-line']"></span>
+        </div>
         <div class="data-per-page">
           <span>Number per page</span>
           <input v-model.number="numberPerPage" max="50" min="1" type="number">
@@ -39,9 +42,10 @@
       <template v-if="allServices.length === 0">
         <div v-if="!loading" class="no-data-action">
           <span v-if="!error" class="ri-file-search-fill"></span>
-          <span v-if="!error" class="no-data-message">Fetch Services</span>
+          <span v-if="!error" class="no-data-message">Fetch Services or Create new ones</span>
           <span v-if="error" class="ri-error-warning-fill error"></span>
           <span v-if="error" class="error-message">Something went wrong <br>- Check internet connection</span>
+
         </div>
         <div v-if="loading" class="loading-data-action">
           <div v-for="data of loadingData" :key="data" class="loading">
@@ -54,8 +58,10 @@
       </template>
       <template v-if="allServices.length !== 0">
         <div class="data-section">
-          <div class="data-header">
-            <div class="service-icon"></div>
+          <div class="data-header" @click="selectAll">
+            <div class="service-icon">
+              <div v-if="selectedAll" class="fade-zoom-rotate"><span class="ri-check-line"></span></div>
+            </div>
             <div class="service-name"><span data-tooltip-text="Service Name">Service Name</span></div>
             <div class="time"><span data-tooltip-text="Time">Time</span></div>
             <div class="day"><span data-tooltip-text="Day">Day</span></div>
@@ -63,22 +69,26 @@
             <div class="number-of-seats"><span data-tooltip-text="Number Of Seats">Seats</span></div>
             <div class="actions"></div>
           </div>
-          <div v-for="service of allServices.slice((currentPage - 1) * numberPerPage, currentPage * numberPerPage)"
-               :key="service.id" class="data">
-            <div class="service-icon">
-              <div :class="['icon', getColor(service.name)]">{{ getIcon(service.name) }}</div>
+          <transition-group name="data-ascension">
+            <div v-for="service of allServices.slice((currentPage - 1) * numberPerPage, currentPage * numberPerPage)"
+                 :key="service?.id" :class="['data', service?.selected ?? false ? 'selected' : '']"
+                 @click="service.selected = !service?.selected; getId(service?.id)">
+              <div class="service-icon">
+                <div v-if="!service?.selected" :class="['icon', getColor(service.name)]">{{ getIcon(service.name) }}</div>
+                <div v-if="service?.selected" :class="['icon', getColor(service.name), 'fade-zoom-rotate']"><span class="ri-check-line"></span></div>
+              </div>
+              <div class="service-name">{{ service?.name }}</div>
+              <div class="time">{{ service?.time }}</div>
+              <div class="day">{{ service?.day }}</div>
+              <div class="duration">{{ service?.durationInMinutes }}</div>
+              <div class="number-of-seats">{{ service?.numberOfSeats }}</div>
+              <div class="actions">
+                <span class="wave"><i class="ri-more-2-fill"></i></span>
+                <span class="wave"><i class="ri-pencil-fill"></i></span>
+                <span class="wave" @click="toggleModal($event, service?.id)"><i class="ri-subtract-fill"></i></span>
+              </div>
             </div>
-            <div class="service-name">{{ service.name }}</div>
-            <div class="time">{{ service.time }}</div>
-            <div class="day">{{ service.day }}</div>
-            <div class="duration">{{ service.durationInMinutes }}</div>
-            <div class="number-of-seats">{{ service.numberOfSeats }}</div>
-            <div class="actions">
-              <span class="wave"><i class="ri-more-2-fill"></i></span>
-              <span class="wave"><i class="ri-pencil-fill"></i></span>
-              <span class="wave" @click="toggleModal($event, service.id)"><i class="ri-subtract-fill"></i></span>
-            </div>
-          </div>
+          </transition-group>
         </div>
       </template>
     </section>
@@ -92,7 +102,8 @@
     </section>
   </div>
   <transition name="fade-and-scale">
-    <section class="modal" v-if="showModal" ref="modal" :style="[`left: ${xPosition + 'px'}`, `top: ${yPosition + 'px'}`]">
+    <section class="modal" v-if="showModal" ref="modal"
+             :style="[`left: ${xPosition + 'px'}`, `top: ${yPosition + 'px'}`]">
       <BaseModal @confirm="removeService">
         <template v-slot:header>Delete Alert</template>
         <template v-slot:body>
@@ -102,7 +113,7 @@
     </section>
   </transition>
   <section :class="['create-new-service', 'draggable', showPanel ? 'show' : '']">
-    <CreateService @closepanel="closePanel" />
+    <CreateService @closepanel="closePanel"/>
   </section>
 </template>
 
@@ -154,6 +165,7 @@ export default {
     }
     // Pagination
     const currentPage = ref(1)
+    // TODO Save numberPerPage in user preferences
     const numberPerPage = ref(10)
     const maxPage = ref(null)
 
@@ -182,13 +194,12 @@ export default {
     watch(numberPerPage, () => {
       currentPage.value = 1
     })
-    // End of Pagination
 
 
-    const getIcon = (str) => {
+    const getIcon = (str = '') => {
       return str.substring(0, 1)
     }
-    const getColor = (str) => {
+    const getColor = (str = '') => {
       if (str.length < 15) return 'green'
       if (str.length < 20 && str.length > 15) return 'danger'
       return 'violet'
@@ -214,7 +225,7 @@ export default {
       if (showModal.value) {
         let targetArea = document.getElementById("manage-services-app")
         targetArea.style.filter = 'brightness(.95) blur(3px)'
-        for(let child of targetArea.children) {
+        for (let child of targetArea.children) {
           child.style.pointerEvents = "none"
         }
         setTimeout(closeModalOnClick, 100)
@@ -229,12 +240,11 @@ export default {
       showModal.value = false
       let targetArea = document.getElementById("manage-services-app")
       targetArea.style.filter = 'blur(0) brightness(1)';
-      for(let child of targetArea.children) {
+      for (let child of targetArea.children) {
         child.style.pointerEvents = "auto"
       }
       targetArea.removeEventListener("click", closeModal)
     }
-    // End of modal functionalities
 
     // Create new service
     const showPanel = ref(false)
@@ -250,10 +260,65 @@ export default {
       document.getElementById("manage-services-app").addEventListener("click", closePanel)
     }
 
-    const  closePanel = () => {
+    const closePanel = () => {
       showPanel.value = false
       document.getElementById("manage-services-app").removeEventListener("click", closePanel)
-     }
+    }
+
+    // Filters for service data
+    const filterByServiceName = () => {
+      allServices.value = allServices.value.sort((a, b) => b - a)
+    }
+
+    // Toggle header lock
+    const isLocked = ref(false)
+    const toggleLock = () => {
+      isLocked.value = !isLocked.value
+    }
+
+    // Toggle Select All
+    const selectedIds = ref([])
+    const selectedAll = ref(false)
+    const selectAll = () => {
+      selectedAll.value = !selectedAll.value
+      if (selectedAll.value) {
+        allServices.value = toggleSelectedValuesForAllServices(true)
+        getAllIds()
+      } else {
+        allServices.value = toggleSelectedValuesForAllServices(false)
+        removeAllIds()
+      }
+      console.log(selectedIds.value)
+    }
+
+    const toggleSelectedValuesForAllServices = (state) => {
+      let filteredArr = []
+      for (let i = 0; i < allServices.value.length; i++) {
+        filteredArr.push({ ...allServices.value[i], selected: state})
+      }
+      return filteredArr
+    }
+
+    const getId = (id) => {
+      if (selectedIds.value) {
+        for (let key of selectedIds.value) {
+          console.log(key)
+          if (key === id) selectedIds.value = selectedIds.value.filter(K => K !== id)
+          if (key !== id) selectedIds.value.push(id)
+        }
+      } else {
+        selectedIds.value.push(id)
+      }
+      console.log(selectedIds.value)
+    }
+
+    const getAllIds = () => {
+      for (let service of allServices.value) {
+        selectedIds.value.push(service?.id)
+      }
+    }
+    const removeAllIds = () => selectedIds.value = []
+
     return {
       allServices,
       loading,
@@ -271,6 +336,8 @@ export default {
       targetServiceName,
       deleting,
       showPanel,
+      isLocked,
+      selectedAll,
       fetchServices,
       getIcon,
       getColor,
@@ -280,7 +347,11 @@ export default {
       toggleModal,
       removeService,
       toggleCreateNewServicePanel,
-      closePanel
+      closePanel,
+      filterByServiceName,
+      toggleLock,
+      selectAll,
+      getId
     }
   }
 }
@@ -288,6 +359,27 @@ export default {
 
 <style lang="scss" scoped>
 @import "../assets/css/base-style";
+
+.data-ascension-enter-from,
+.data-ascension-leave-to {
+  width: 90% !important;
+  opacity: 0 !important;
+}
+
+.data-ascension-enter-active,
+.data-ascension-leave-active {
+  transition: all 250ms ease-in;
+}
+
+.sticky-top {
+  position: sticky;
+  top: -1rem;
+  background: color(lighter);
+  z-index: $first-layer;
+  box-shadow: 0 0 1rem .05rem #00000005;
+  transform: scale(1.005);
+  transition: all 250ms ease-in;
+}
 
 .manage-services {
   width: 100%;
@@ -379,12 +471,14 @@ export default {
         font-weight: bold;
         font-size: 1.2rem !important;
       }
+
       .no-data-message {
         color: color(primary-light);
       }
+
       .error-message {
         text-align: center;
-          color: color(danger-light);
+        color: color(danger-light);
       }
 
       span {
@@ -407,6 +501,22 @@ export default {
       .show {
         flex: 1 0 auto;
         text-align: right;
+      }
+
+      .lock-header {
+        cursor: pointer;
+
+        span {
+          color: color(primary-light);
+        }
+
+        @media screen and (max-width: $medium-screen) {
+          display: none;
+        }
+      }
+
+      &:not(.sticky-top) {
+        transition: all 250ms ease-in;
       }
 
       .data-per-page, .show {
@@ -476,6 +586,7 @@ export default {
 
         .service-icon {
           flex: 0 0 2.5rem;
+          @include center;
         }
 
         .service-name, .day, .time, .actions {
@@ -500,6 +611,10 @@ export default {
         flex-wrap: nowrap;
         padding: .75rem 1rem;
 
+        &:not(.selected) {
+          transition: all 250ms ease-out;
+        }
+
         div {
           font-size: 1.08rem;
           font-weight: bold;
@@ -518,6 +633,22 @@ export default {
           .icon {
             @include circle(2rem);
             font-weight: bolder;
+          }
+
+          .icon.fade-zoom-rotate {
+            animation: fade-zoom-rotate 250ms ease-in 1 forwards;
+            @keyframes fade-zoom-rotate {
+              from {
+                opacity: 0;
+                zoom: 0;
+                transform: rotateX(45deg);
+              }
+              to {
+                opacity: 1;
+                zoom: 1;
+                transform: rotateX(0);
+              }
+            }
           }
         }
 
@@ -637,6 +768,7 @@ export default {
   transition: right 500ms;
 
   box-shadow: 0 0 2rem 1rem #00000015;
+  overflow: hidden scroll;
 
   /*@supports (backdrop-filter: blur()) {
     backdrop-filter: blur(20px);
@@ -658,6 +790,11 @@ export default {
     width: 95vw;
     right: -100%;
   }
+}
+
+.selected {
+  background: #17808210 !important;
+  transition: all 250ms ease-in;
 }
 
 .loading {
@@ -705,4 +842,22 @@ button.muted {
     cursor: not-allowed !important;
   }
 }
+
+.fade-zoom-rotate {
+  margin-top: .5rem;
+  animation: fade-zoom-rotate 250ms ease-in 1 forwards;
+  @keyframes fade-zoom-rotate {
+    from {
+      opacity: 0;
+      zoom: 0;
+      transform: rotateX(45deg);
+    }
+    to {
+      opacity: 1;
+      zoom: 1;
+      transform: rotateX(0);
+    }
+  }
+}
+
 </style>
