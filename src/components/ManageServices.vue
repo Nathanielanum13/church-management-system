@@ -33,8 +33,16 @@
           </button>
         </div>
         <div class="add-data">
-          <button class="wave" type="button" @click="toggleCreateNewServicePanel">+ Create New Service</button>
+          <button class="wave" type="button" @click="toggleCreateNewServicePanel">+ Create Service</button>
         </div>
+        <transition name="zoom-rotate">
+          <div class="batch-delete" v-if="selectedIds.length !== 0">
+            <button class="wave" type="button" @click="batchDelete">
+              <span class="ri-delete-bin-2-line"></span>
+            </button>
+            <div class="badge">{{ selectedIds.length }}</div>
+          </div>
+        </transition>
         <div class="show" v-if="allServices.length !== 0">
           <span>Showing {{ start }} to {{ ending }} of {{ allServices.length }} entries</span>
         </div>
@@ -140,6 +148,7 @@ export default {
 
     const fetchServices = async () => {
       allServices.value = []
+      selectedIds.value = []
       loading.value = true
       await fetchAllServices()
           .then((res) => allServices.value = res)
@@ -149,6 +158,8 @@ export default {
             error.value = true
           })
     }
+
+    const batchDelete = () => {}
 
     // Deleting a service
     const deleting = ref(false)
@@ -214,6 +225,7 @@ export default {
     const targetServiceName = ref(null)
 
     const toggleModal = (e, serviceId) => {
+      e.stopPropagation()
       showModal.value = !showModal.value
 
       xPosition.value = e.clientX;
@@ -300,23 +312,21 @@ export default {
     }
 
     const getId = (id) => {
-      if (selectedIds.value) {
-        for (let key of selectedIds.value) {
-          console.log(key)
-          if (key === id) selectedIds.value = selectedIds.value.filter(K => K !== id)
-          if (key !== id) selectedIds.value.push(id)
+      allServices.value.filter((service) => {
+        if (service?.id === id) {
+          return service?.selected ? selectedIds.value.push(service.id) : selectedIds.value = selectedIds.value.filter((value) => value !== service?.id)
         }
-      } else {
-        selectedIds.value.push(id)
-      }
+      })
       console.log(selectedIds.value)
     }
 
     const getAllIds = () => {
+      selectedIds.value = []
       for (let service of allServices.value) {
         selectedIds.value.push(service?.id)
       }
     }
+
     const removeAllIds = () => selectedIds.value = []
 
     return {
@@ -338,6 +348,7 @@ export default {
       showPanel,
       isLocked,
       selectedAll,
+      selectedIds,
       fetchServices,
       getIcon,
       getColor,
@@ -351,7 +362,8 @@ export default {
       filterByServiceName,
       toggleLock,
       selectAll,
-      getId
+      getId,
+      batchDelete
     }
   }
 }
@@ -371,12 +383,21 @@ export default {
   transition: all 250ms ease-in;
 }
 
+.zoom-rotate-enter-from,
+.zoom-rotate-leave-to {
+  transform: scale(0);
+}
+.zoom-rotate-enter-active,
+.zoom-rotate-leave-active {
+  transition: all 250ms ease-in-out;
+}
+
 .sticky-top {
   position: sticky;
-  top: -1rem;
+  top: 0;
   background: color(lighter);
   z-index: $first-layer;
-  box-shadow: 0 0 1rem .05rem #00000005;
+  box-shadow: 0 .2rem 1rem .1rem #00000015;
   transform: scale(1.005);
   transition: all 250ms ease-in;
 }
@@ -545,11 +566,31 @@ export default {
         }
       }
 
-      .refresh-data, .add-data {
+      .refresh-data, .add-data, .batch-delete {
         button {
           @include base-button;
           margin: 0 0 0 .5rem;
           font-weight: bold;
+        }
+      }
+
+      .batch-delete {
+        position: relative;
+
+        .badge {
+          position: absolute;
+          font-weight: bold;
+          border-radius: 50%;
+          background: color(danger);
+          color: color(lighter);
+
+          @include circle(2rem);
+          @include center;
+
+          right: 0;
+          top: 0;
+
+          transform: translate(50%, -50%);
         }
       }
     }

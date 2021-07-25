@@ -39,6 +39,266 @@
       "createdOn": "1",
       "updateOn": "1",
       "id": 7
+    },
+    {
+      "name": "Opokus Wedding",
+      "time": "09:30",
+      "day": "MONDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "25",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 8
+    },
+    {
+      "name": "My Service",
+      "time": "06:06",
+      "day": "FRIDAY",
+      "numberOfSeats": "60",
+      "durationInMinutes": "150",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 10
+    },
+    {
+      "name": "Naming Ceremony",
+      "time": "09:30",
+      "day": "TUESDAY",
+      "numberOfSeats": "50",
+      "durationInMinutes": "180",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 41
+    },
+    {
+      "name": "Monday Service",
+      "time": "10:20",
+      "day": "WEDNESDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "90",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 51
+    },
+    {
+      "name": "Demo Service",
+      "time": "20:15",
+      "day": "TUESDAY",
+      "numberOfSeats": "100",
+      "durationInMinutes": "120",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 61
+    },
+    {
+      "name": "Anum Service",
+      "time": "12:15",
+      "day": "MONDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "120",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 71
+    },
+    {
+      "name": "Opokus Wedding",
+      "time": "09:30",
+      "day": "MONDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "25",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 81
+    },
+    {
+      "name": "Demo Service",
+      "time": "15:30",
+      "day": "WEDNESDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "120",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 91
+    },
+    {
+      "name": "My Service",
+      "time": "06:06",
+      "day": "FRIDAY",
+      "numberOfSeats": "60",
+      "durationInMinutes": "150",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 101
+    },
+    {
+      "name": "Naming Ceremony",
+      "time": "09:30",
+      "day": "TUESDAY",
+      "numberOfSeats": "50",
+      "durationInMinutes": "180",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 413
+    },
+    {
+      "name": "Monday Service",
+      "time": "10:20",
+      "day": "WEDNESDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "90",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 513
+    },
+    {
+      "name": "Demo Service",
+      "time": "20:15",
+      "day": "TUESDAY",
+      "numberOfSeats": "100",
+      "durationInMinutes": "120",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 613
+    },
+    {
+      "name": "Anum Service",
+      "time": "12:15",
+      "day": "MONDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "120",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 713
+    },
+    {
+      "name": "Opokus Wedding",
+      "time": "09:30",
+      "day": "MONDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "25",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 813
+    },
+    {
+      "name": "Demo Service",
+      "time": "15:30",
+      "day": "WEDNESDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "120",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 913
+    },
+    {
+      "name": "My Service",
+      "time": "06:06",
+      "day": "FRIDAY",
+      "numberOfSeats": "60",
+      "durationInMinutes": "150",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 1013
+    },
+    {
+      "name": "Naming Ceremony",
+      "time": "09:30",
+      "day": "TUESDAY",
+      "numberOfSeats": "50",
+      "durationInMinutes": "180",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 412
+    },
+    {
+      "name": "Monday Service",
+      "time": "10:20",
+      "day": "WEDNESDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "90",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 512
+    },
+    {
+      "name": "Demo Service",
+      "time": "20:15",
+      "day": "TUESDAY",
+      "numberOfSeats": "100",
+      "durationInMinutes": "120",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 612
+    },
+    {
+      "name": "Anum Service",
+      "time": "12:15",
+      "day": "MONDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "120",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 712
+    },
+    {
+      "name": "Opokus Wedding",
+      "time": "09:30",
+      "day": "MONDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "25",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 812
+    },
+    {
+      "name": "Demo Service",
+      "time": "15:30",
+      "day": "WEDNESDAY",
+      "numberOfSeats": "10",
+      "durationInMinutes": "120",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 912
+    },
+    {
+      "name": "My Service",
+      "time": "06:06",
+      "day": "FRIDAY",
+      "numberOfSeats": "60",
+      "durationInMinutes": "150",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 1012
+    },
+    {
+      "name": "B Service",
+      "time": "07:15",
+      "day": "SUNDAY",
+      "numberOfSeats": "100",
+      "durationInMinutes": "20",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 1014
+    },
+    {
+      "name": "Monday Service",
+      "time": "10:21",
+      "day": "MONDAY",
+      "numberOfSeats": "100",
+      "durationInMinutes": "120",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 1015
+    },
+    {
+      "name": "Monday Service",
+      "time": "10:20",
+      "day": "TUESDAY",
+      "numberOfSeats": "020",
+      "durationInMinutes": "90",
+      "createdOn": "1",
+      "updateOn": "1",
+      "id": 1016
     }
   ]
 }
