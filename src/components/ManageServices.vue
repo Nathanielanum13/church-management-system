@@ -22,7 +22,7 @@
         </div>
         <div class="data-per-page">
           <span>Number per page</span>
-          <input v-model.number="numberPerPage" max="50" min="1" type="number">
+          <input v-model.number="showPerPage" max="50" min="1" type="number">
         </div>
         <div class="fetch-data">
           <button class="wave" type="button" @click="fetchServices">Fetch Services</button>
@@ -128,6 +128,7 @@
 <script>
 import useService from "@/services/church-management-services/useServicesFactory";
 import {computed, ref, watch} from "vue"
+import {useStore} from "vuex"
 import BaseModal from "@/components/BaseModal";
 
 import CreateService from "@/components/CreateService";
@@ -139,6 +140,7 @@ export default {
     CreateService
   },
   setup() {
+    const store = useStore()
     const {fetchAllServices, deleteService} = useService()
     const allServices = ref([])
 
@@ -175,9 +177,10 @@ export default {
           })
     }
     // Pagination
+    const showPerPage = ref(store.state.preferences.servicesNumberPerPage)
     const currentPage = ref(1)
-    // TODO Save numberPerPage in user preferences
-    const numberPerPage = ref(10)
+
+    const numberPerPage = computed(() => store.state.preferences.servicesNumberPerPage)
     const maxPage = ref(null)
 
     const pages = () => {
@@ -202,8 +205,12 @@ export default {
     const start = computed(() => (currentPage.value - 1) * numberPerPage.value + 1)
     const ending = computed(() => ((currentPage.value - 1) * numberPerPage.value) + allServices.value.slice((currentPage.value - 1) * numberPerPage.value, currentPage.value * numberPerPage.value).length)
 
-    watch(numberPerPage, () => {
+    watch(showPerPage, () => {
       currentPage.value = 1
+      store.dispatch('updatePreferences', {
+        fieldToUpdate: 'servicesNumberPerPage',
+        updatedValue: showPerPage.value
+      })
     })
 
 
@@ -283,9 +290,13 @@ export default {
     }
 
     // Toggle header lock
-    const isLocked = ref(false)
+    const isLocked = computed(() => store.state.preferences.servicesTableHeaderLock)
     const toggleLock = () => {
-      isLocked.value = !isLocked.value
+      store.dispatch('updatePreferences', {
+        fieldToUpdate: 'servicesTableHeaderLock',
+        updatedValue: !store.state.preferences.servicesTableHeaderLock
+      })
+      /*isLocked.value = !isLocked.value*/
     }
 
     // Toggle Select All
@@ -334,6 +345,7 @@ export default {
       loading,
       loadingData,
       numberPerPage,
+      showPerPage,
       currentPage,
       maxPage,
       start,

@@ -147,13 +147,6 @@ export default {
       toggler.value.addEventListener("click", () => toggleDrawer())
     })
 
-    // Check [tutorial] key in the local storage
-    // If it exist do nothing
-    // Else set and change state to false
-    if (!window.localStorage.hasOwnProperty('tutorial-key')) {
-      window.localStorage['tutorial-key'] = true
-    }
-
     const showTooltip = computed(() => toggleState.value ? 'label' : '')
     const enlargeIcon = computed(() => toggleState.value ? 'enlarge-icon' : '')
     const showLabel = computed(() => toggleState.value ? 'display: none': '')

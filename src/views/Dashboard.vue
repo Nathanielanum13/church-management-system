@@ -62,7 +62,7 @@
         </div>
       </div>
       <div class="tutorials-and-links">
-        <div v-if="tutorialState === 'true'" class="tutorials">
+        <div v-if="tutorialState" class="tutorials">
           <div class="slider">
             <div ref="slides" class="slides">
               <img alt="slider01" class="slide" src="@/assets/img/slider/slider-1.png">
@@ -178,12 +178,14 @@
 </template>
 
 <script>
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, computed} from 'vue'
+import {useStore} from "vuex"
 import useService from '../services/church-management-services/useServicesFactory'
 
 export default {
   name: "Dashboard",
   setup() {
+    const store = useStore()
     const {numberOfServices} = useService()
     const totalNumberOfServices = ref(0)
 
@@ -191,7 +193,8 @@ export default {
       await numberOfServices().then((value) => totalNumberOfServices.value = value)
     })
 
-    const tutorialState = ref(window.localStorage['tutorial-key'])
+    const tutorialState = computed(() => store.state.preferences.showInitialTutorial)
+
     const slides = ref(null)
     const slidePosition = ref(0)
     const nextSlide = () => {
@@ -209,9 +212,10 @@ export default {
       }
     }
     const closeTutorial = () => {
-      console.log(tutorialState.value)
-      tutorialState.value = false
-      window.localStorage['tutorial-key'] = tutorialState.value
+      store.dispatch('updatePreferences', {
+        fieldToUpdate: 'showInitialTutorial',
+        updatedValue: false
+      })
     }
 
     return {
