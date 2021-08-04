@@ -79,7 +79,7 @@
           </div>
           <transition-group name="data-ascension">
             <div v-for="service of allServices.slice((currentPage - 1) * numberPerPage, currentPage * numberPerPage)"
-                 :key="service?.id" :class="['data', service?.selected ?? false ? 'selected' : '']"
+                 :key="service?.id" :class="['data', service?.selected ?? false ? 'selected' : '', service?.isDeleting ?? false ? 'isDeleting' : '']"
                  @click="service.selected = !service?.selected; getId(service?.id)">
               <div class="service-icon">
                 <div v-if="!service?.selected" :class="['icon', getColor(service.name)]">{{ getIcon(service.name) }}</div>
@@ -161,7 +161,16 @@ export default {
           })
     }
 
-    const batchDelete = () => {}
+    const batchDelete = async () => {
+      for (let id of selectedIds.value) {
+        allServices.value = allServices.value.map(service => {
+          return service?.id === id ? {...service, isDeleting: true} : {...service}
+        })
+        await deleteService(id)
+            .then(_ => allServices.value = allServices.value.filter((service) => service?.id !== id))
+            .then(_ => selectedIds.value = [])
+      }
+    }
 
     // Deleting a service
     const deleting = ref(false)
@@ -176,6 +185,7 @@ export default {
             closeModal()
           })
     }
+
     // Pagination
     const showPerPage = ref(store.state.preferences.servicesNumberPerPage)
     const currentPage = ref(1)
@@ -386,7 +396,7 @@ export default {
 
 .data-ascension-enter-from,
 .data-ascension-leave-to {
-  width: 90% !important;
+  width: 95% !important;
   opacity: 0 !important;
 }
 
@@ -848,6 +858,14 @@ export default {
 .selected {
   background: #17808210 !important;
   transition: all 250ms ease-in;
+}
+.isDeleting {
+  animation: slide-fade 600ms forwards linear infinite alternate-reverse;
+  @keyframes slide-fade {
+    to {
+      opacity: .5;
+    }
+  }
 }
 
 .loading {

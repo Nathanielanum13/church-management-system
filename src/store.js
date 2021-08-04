@@ -4,7 +4,8 @@ export default {
             preferences: {
                 showInitialTutorial: true,
                 servicesNumberPerPage: 10,
-                servicesTableHeaderLock: false
+                servicesTableHeaderLock: false,
+                isDrawerMinified: true
             }
         }
     },
@@ -22,6 +23,8 @@ export default {
                 state.preferences.servicesNumberPerPage = updatedValue
             if (fieldToUpdate === 'servicesTableHeaderLock')
                 state.preferences.servicesTableHeaderLock = updatedValue
+            if (fieldToUpdate === 'isDrawerMinified')
+                state.preferences.isDrawerMinified = updatedValue
         }
     },
     actions: {

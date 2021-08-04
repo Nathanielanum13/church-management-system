@@ -85,6 +85,8 @@
 import BaseNavigation from "@/components/BaseNavigation";
 import BaseSearchInput from "@/components/BaseSearchInput";
 import BaseToggler from "@/components/BaseToggler";
+import {useStore} from "vuex"
+import {Preferences} from "../models/preference";
 import {onMounted, ref, computed, watch} from "vue"
 
 export default {
@@ -95,16 +97,22 @@ export default {
     BaseToggler
   },
   setup() {
+    const store = useStore()
+
     const toggler = ref(null)
     const drawer = ref(null)
     const main = ref(null)
-    const toggleState = ref(true)
+    const toggleState = computed(() => store.state.preferences.isDrawerMinified)
+    // const toggleState = ref(true)
     const slideState = ref(false)
-    const bodyWidth = ref(document.body.clientWidth)
 
     const slideDrawer = () => {
       // Show full version of drawer
-      toggleState.value = false
+      /*toggleState.value = false*/
+      store.dispatch('updatePreferences', {
+        fieldToUpdate: Preferences.isDrawerMinified,
+        updatedValue: false
+      })
 
       // Toggle slide state to append css class for
       // sliding in and out
@@ -128,7 +136,11 @@ export default {
     }
 
     const toggleDrawer = () => {
-      toggleState.value = !toggleState.value
+      store.dispatch('updatePreferences', {
+        fieldToUpdate: Preferences.isDrawerMinified,
+        updatedValue: !toggleState.value
+      })
+      /*toggleState.value = !toggleState.value*/
       if (toggleState.value) {
         main.value.style.animation = 'slide-down 50ms forwards'
       } else {
@@ -136,15 +148,11 @@ export default {
       }
     }
 
-    watch(bodyWidth, () => {
-      /*if (bodyWidth.value > 567) {
-        toggleState.value = true
-      }*/
-      console.log(bodyWidth.value)
-    })
-
     onMounted(() => {
       toggler.value.addEventListener("click", () => toggleDrawer())
+      toggleState.value
+          ? main.value.style.animation = 'slide-down 50ms forwards'
+          : main.value.style.animation = 'slide-up 50ms forwards'
     })
 
     const showTooltip = computed(() => toggleState.value ? 'label' : '')
