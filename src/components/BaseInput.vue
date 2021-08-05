@@ -76,7 +76,7 @@ export default {
     watch(userInput, () => emit("day-from-input", userInput.value))
     watch(value, () => setUserInput())
     watch(reset, () => {
-      if (reset) userInput.value = ''
+      if (reset.value) userInput.value = ''
     })
 
     return {

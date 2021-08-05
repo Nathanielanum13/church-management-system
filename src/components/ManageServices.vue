@@ -1,21 +1,23 @@
 <template>
   <div class="manage-services" id="manage-services-app">
-    <section class="all-services-section">
-      <div class="all-services">All Services</div>
-      <div class="downloads">
+    <transition name="slide-fade">
+      <section class="all-services-section" v-if="!isLocked">
+        <div class="all-services">All Services</div>
+        <div class="downloads">
       <span class="download-text">
         Download
       </span>
-        <span class="download-options">
+          <span class="download-options">
         <span>Copy</span>
         <span>CSV</span>
         <span>Excel</span>
         <span>PDF</span>
         <span>Print</span>
       </span>
-      </div>
-    </section>
-    <section class="services-table">
+        </div>
+      </section>
+    </transition>
+    <section :class="['services-table', isLocked ? 'growHeight' : '']" :style="isLocked ? 'margin: 0' : ''">
       <div :class="['services-header-options', isLocked ? 'sticky-top' : '']">
         <div class="lock-header" @click="toggleLock">
           <span :class="[ isLocked ? 'ri-lock-line' : 'ri-lock-unlock-line']"></span>
@@ -33,7 +35,7 @@
           </button>
         </div>
         <div class="add-data">
-          <button class="wave" type="button" @click="toggleCreateNewServicePanel">+ Create Service</button>
+          <button class="wave" type="button" @click="toggleCreateNewServicePanel($event, {})">+ Create Service</button>
         </div>
         <transition name="zoom-rotate">
           <div class="batch-delete" v-if="selectedIds.length !== 0">
@@ -70,20 +72,28 @@
             <div class="service-icon">
               <div v-if="selectedAll" class="fade-zoom-rotate"><span class="ri-check-line"></span></div>
             </div>
-            <div class="service-name"><span data-tooltip-text="Service Name">Service Name</span></div>
-            <div class="time"><span data-tooltip-text="Time">Time</span></div>
+            <div class="service-name"><span data-tooltip-text="Service Name" @click="toggleSortBy($event, 0)">Service Name <span
+                :class="['sort-indicator', sortBy[0] ? 'active' : '']"></span></span></div>
+            <div class="time"><span data-tooltip-text="Time" @click="toggleSortBy($event, 1)">Time <span
+                :class="['sort-indicator', sortBy[1] ? 'active' : '']"></span></span></div>
             <div class="day"><span data-tooltip-text="Day">Day</span></div>
-            <div class="duration"><span data-tooltip-text="Duration In Minutes">Duration</span></div>
-            <div class="number-of-seats"><span data-tooltip-text="Number Of Seats">Seats</span></div>
+            <div class="duration"><span data-tooltip-text="Duration In Minutes" @click="toggleSortBy($event, 2)">Duration <span
+                :class="['sort-indicator', sortBy[2] ? 'active' : '']"></span></span></div>
+            <div class="number-of-seats"><span data-tooltip-text="Number Of Seats" @click="toggleSortBy($event, 3)">Seats <span
+                :class="['sort-indicator', sortBy[3] ? 'active' : '']"></span></span></div>
             <div class="actions"></div>
           </div>
-          <transition-group name="data-ascension">
+          <!--TODO Animation for table data-->
+          <transition-group name="list" tag="div">
             <div v-for="service of allServices.slice((currentPage - 1) * numberPerPage, currentPage * numberPerPage)"
-                 :key="service?.id" :class="['data', service?.selected ?? false ? 'selected' : '', service?.isDeleting ?? false ? 'isDeleting' : '']"
+                 :key="service?.id"
+                 :class="['data', service?.selected ?? false ? 'selected' : '', service?.isDeleting ?? false ? 'isDeleting' : '']"
                  @click="service.selected = !service?.selected; getId(service?.id)">
               <div class="service-icon">
-                <div v-if="!service?.selected" :class="['icon', getColor(service.name)]">{{ getIcon(service.name) }}</div>
-                <div v-if="service?.selected" :class="['icon', getColor(service.name), 'fade-zoom-rotate']"><span class="ri-check-line"></span></div>
+                <div v-if="!service?.selected" :class="['icon', getColor(service.name)]">{{ getIcon(service.name) }}
+                </div>
+                <div v-if="service?.selected" :class="['icon', getColor(service.name), 'fade-zoom-rotate']"><span
+                    class="ri-check-line"></span></div>
               </div>
               <div class="service-name">{{ service?.name }}</div>
               <div class="time">{{ service?.time }}</div>
@@ -91,22 +101,23 @@
               <div class="duration">{{ service?.durationInMinutes }}</div>
               <div class="number-of-seats">{{ service?.numberOfSeats }}</div>
               <div class="actions">
-                <span class="wave"><i class="ri-more-2-fill"></i></span>
-                <span class="wave"><i class="ri-pencil-fill"></i></span>
+                <!--              <span class="wave"><i class="ri-more-2-fill"></i></span>-->
+                <span class="wave" @click="toggleCreateNewServicePanel($event, service)"><i
+                    class="ri-pencil-fill"></i></span>
                 <span class="wave" @click="toggleModal($event, service?.id)"><i class="ri-subtract-fill"></i></span>
               </div>
             </div>
           </transition-group>
+          <section :style="allServices.length === 0 || maxPage === 1 ? 'display: none' : ''" class="pagination">
+            <button :class="['prev', 'wave', currentPage === 1 ? 'muted' : '']" @click="prev">Previous</button>
+            <div class="pages">
+              <span v-for="page of pages()" :key="page" :class="['page', page === currentPage ? 'active' : '']"
+                    @click="currentPage = page">{{ page }}</span>
+            </div>
+            <button :class="['next', 'wave', currentPage === maxPage ? 'muted' : '']" @click="next">Next</button>
+          </section>
         </div>
       </template>
-    </section>
-    <section :style="allServices.length === 0 ? 'display: none' : ''" class="pagination">
-      <button :class="['prev', 'wave', currentPage === 1 ? 'muted' : '']" @click="prev">Previous</button>
-      <div class="pages">
-        <span v-for="page of pages()" :key="page" :class="['page', page === currentPage ? 'active' : '']"
-              @click="currentPage = page">{{ page }}</span>
-      </div>
-      <button :class="['next', 'wave', currentPage === maxPage ? 'muted' : '']" @click="next">Next</button>
     </section>
   </div>
   <transition name="fade-and-scale">
@@ -121,7 +132,7 @@
     </section>
   </transition>
   <section :class="['create-new-service', 'draggable', showPanel ? 'show' : '']">
-    <CreateService @closepanel="closePanel"/>
+    <CreateService :service="serviceToUpdate" @closepanel="closePanel"/>
   </section>
 </template>
 
@@ -228,8 +239,8 @@ export default {
       return str.substring(0, 1)
     }
     const getColor = (str = '') => {
-      if (str.length < 15) return 'green'
-      if (str.length < 20 && str.length > 15) return 'danger'
+      if (str.length <= 12) return 'green'
+      if (str.length <= 15 && str.length > 12) return 'danger'
       return 'violet'
     }
 
@@ -275,12 +286,17 @@ export default {
       targetArea.removeEventListener("click", closeModal)
     }
 
+    // Update an existing service
+    const serviceToUpdate = ref({})
+
     // Create new service
     const showPanel = ref(false)
-    const toggleCreateNewServicePanel = () => {
+    const toggleCreateNewServicePanel = (e, service = {}) => {
+      e.stopPropagation()
       showPanel.value = !showPanel.value
 
       if (showPanel.value) {
+        serviceToUpdate.value = service
         setTimeout(closePanelOnClick, 100)
       }
     }
@@ -321,13 +337,12 @@ export default {
         allServices.value = toggleSelectedValuesForAllServices(false)
         removeAllIds()
       }
-      console.log(selectedIds.value)
     }
 
     const toggleSelectedValuesForAllServices = (state) => {
       let filteredArr = []
       for (let i = 0; i < allServices.value.length; i++) {
-        filteredArr.push({ ...allServices.value[i], selected: state})
+        filteredArr.push({...allServices.value[i], selected: state})
       }
       return filteredArr
     }
@@ -338,7 +353,6 @@ export default {
           return service?.selected ? selectedIds.value.push(service.id) : selectedIds.value = selectedIds.value.filter((value) => value !== service?.id)
         }
       })
-      console.log(selectedIds.value)
     }
 
     const getAllIds = () => {
@@ -349,6 +363,27 @@ export default {
     }
 
     const removeAllIds = () => selectedIds.value = []
+
+    // Sorting functionalities
+    const sortBy = ref([false, false, false, false])
+    const toggleSortBy = (e, arrayIndex) => {
+      e.stopPropagation()
+      sortBy.value = sortBy.value.map((sortByValue, index) =>
+          index === arrayIndex ? !sortByValue : false)
+      if (arrayIndex === 0) sortObject("name", sortBy.value[0])
+      if (arrayIndex === 1) sortObject("time", sortBy.value[1])
+      if (arrayIndex === 2) sortObject("durationInMinutes", sortBy.value[2])
+      if (arrayIndex === 3) sortObject("numberOfSeats", sortBy.value[3])
+    }
+
+    const sortObject = (sortField, sortOrder) => {
+      allServices.value = allServices.value.sort((a, b) => {
+        if (a[sortField] > b[sortField]) return 1
+        if (a[sortField] < b[sortField]) return -1
+        return 0
+      })
+      if (!sortOrder) allServices.value = allServices.value.reverse()
+    }
 
     return {
       allServices,
@@ -371,6 +406,8 @@ export default {
       isLocked,
       selectedAll,
       selectedIds,
+      serviceToUpdate,
+      sortBy,
       fetchServices,
       getIcon,
       getColor,
@@ -385,7 +422,8 @@ export default {
       toggleLock,
       selectAll,
       getId,
-      batchDelete
+      batchDelete,
+      toggleSortBy
     }
   }
 }
@@ -393,6 +431,8 @@ export default {
 
 <style lang="scss" scoped>
 @import "../assets/css/base-style";
+
+$service-table-small-column: 10rem;
 
 .data-ascension-enter-from,
 .data-ascension-leave-to {
@@ -409,6 +449,7 @@ export default {
 .zoom-rotate-leave-to {
   transform: scale(0);
 }
+
 .zoom-rotate-enter-active,
 .zoom-rotate-leave-active {
   transition: all 250ms ease-in-out;
@@ -416,6 +457,7 @@ export default {
 
 .sticky-top {
   position: sticky;
+  padding: 1rem !important;
   top: 0;
   background: color(lighter);
   z-index: $first-layer;
@@ -503,6 +545,16 @@ export default {
     padding: 1rem;
 
     position: relative;
+
+    &:not(.growHeight) {
+      transition: all 500ms ease-in;
+      animation: shrink 250ms forwards ease-in 1 normal;
+      @keyframes shrink {
+        to {
+          height: 65vh
+        }
+      }
+    }
 
     .no-data-action {
       @include center-self;
@@ -643,8 +695,28 @@ export default {
           color: #656565;
         }
 
-        .duration, .number-of-seats, .time {
-          flex: 0 0 5rem;
+        span.sort-indicator {
+          @include circle(.5rem);
+          display: inline-block;
+          margin: auto;
+          border: 1px solid #808080;
+        }
+
+        span.sort-indicator.active {
+          background-color: greenyellow;
+          transition: all 150ms ease-in;
+          border: none;
+        }
+        span.sort-indicator:not(.active) {
+          transition: all 150ms ease-out;
+        }
+
+        span[data-tooltip-text] {
+          cursor: pointer;
+        }
+
+        .duration, .number-of-seats, .time, .actions {
+          flex: 0 0 8.5rem;
         }
 
         .service-icon {
@@ -652,8 +724,8 @@ export default {
           @include center;
         }
 
-        .service-name, .day, .time, .actions {
-          flex: 0 0 calc((100% - 2.5rem - 15rem) / 4);
+        .service-name, .day {
+          flex: 0 0 calc((100% - 2.5rem - 3rem - (4 * 8.5rem)) / 2);
         }
       }
 
@@ -666,6 +738,7 @@ export default {
 
         position: relative;
         opacity: 1;
+        transition: all .8s ease;
 
         @include row;
         gap: 5px;
@@ -686,8 +759,8 @@ export default {
           @include cut-text;
         }
 
-        .duration, .number-of-seats, .time {
-          flex: 0 0 5rem;
+        .duration, .number-of-seats, .time, .actions {
+          flex: 0 0 8.5rem;
         }
 
         .service-icon {
@@ -715,13 +788,13 @@ export default {
           }
         }
 
-        .service-name, .day, .time, .actions {
-          flex: 0 0 calc((100% - 2.5rem - 15rem) / 4);
+        .service-name, .day {
+          flex: 0 0 calc((100% - 2.5rem - 3rem - (4 * 8.5rem)) / 2);
         }
 
         .actions {
           @include row;
-          justify-content: space-between;
+          justify-content: space-around;
           padding: .5rem;
           align-items: center;
 
@@ -733,12 +806,12 @@ export default {
             }
           }
 
-          span:nth-child(2) {
+          span:nth-child(1) {
             background-color: color(primary);
             color: color(lighter);
           }
 
-          span:nth-child(3) {
+          span:nth-child(2) {
             background-color: color(danger);
             color: color(lighter);
           }
@@ -748,14 +821,14 @@ export default {
   }
 
   .pagination {
-    width: 100%;
+    width: calc(100% - 3rem);
     height: auto;
     padding: 2rem;
     position: absolute;
-    bottom: 0;
+    //bottom: 0;
     right: 50%;
     transform: translateX(50%);
-    opacity: 0;
+    opacity: 0.5;
 
     display: flex;
     align-items: center;
@@ -780,7 +853,7 @@ export default {
 
     &:not(:hover) {
       background-color: #ffffff20;
-      opacity: 0;
+      opacity: 0.5;
       transition: all 1s ease-out;
     }
 
@@ -859,6 +932,7 @@ export default {
   background: #17808210 !important;
   transition: all 250ms ease-in;
 }
+
 .isDeleting {
   animation: slide-fade 600ms forwards linear infinite alternate-reverse;
   @keyframes slide-fade {
@@ -931,4 +1005,16 @@ button.muted {
   }
 }
 
+.growHeight {
+  transition: all 500ms ease-in;
+  animation: grow 250ms forwards ease-in 1 normal;
+  @keyframes grow {
+    from {
+      height: 65vh
+    }
+    to {
+      height: calc(75vh - 1rem);
+    }
+  }
+}
 </style>

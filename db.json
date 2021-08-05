@@ -1,44 +1,44 @@
 {
   "services": [
     {
-      "name": "B Service",
-      "time": "07:15",
+      "name": "Comminion Service",
+      "time": "08:15",
       "day": "SUNDAY",
-      "numberOfSeats": "100",
-      "durationInMinutes": "20",
+      "numberOfSeats": "20",
+      "durationInMinutes": "30",
       "createdOn": "1",
       "updateOn": "1",
-      "id": 1014
+      "id": 5
     },
     {
-      "name": "Monday Service",
-      "time": "10:21",
-      "day": "MONDAY",
+      "name": "Cathechist Sendoff",
+      "time": "10:00",
+      "day": "SUNDAY",
       "numberOfSeats": "100",
       "durationInMinutes": "120",
       "createdOn": "1",
       "updateOn": "1",
-      "id": 1015
+      "id": 6
     },
     {
-      "name": "Monday Service",
-      "time": "10:20",
-      "day": "TUESDAY",
-      "numberOfSeats": "020",
-      "durationInMinutes": "90",
+      "name": "Demo Service",
+      "time": "09:00",
+      "day": "WEDNESDAY",
+      "numberOfSeats": "20",
+      "durationInMinutes": "120",
       "createdOn": "1",
       "updateOn": "1",
-      "id": 1016
+      "id": 7
     },
     {
       "name": "Monday Service",
-      "time": "10:26",
-      "day": "WEDNESDAY",
-      "numberOfSeats": "0",
+      "time": "08:15",
+      "day": "MONDAY",
+      "numberOfSeats": "10",
       "durationInMinutes": "60",
       "createdOn": "1",
       "updateOn": "1",
-      "id": 1017
+      "id": 8
     }
   ]
 }

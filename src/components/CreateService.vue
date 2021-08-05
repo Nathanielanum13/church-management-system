@@ -4,21 +4,23 @@
       <div @click="$emit('closepanel')" class="toggler">
         <BaseToggler/>
       </div>
-      <div class="title">Create a <span class="badge">new</span> service</div>
+      <div v-if="!service.name" class="title">Create a <span class="badge">new</span> service</div>
+      <div v-if="service.name" class="title">Okay, Let's <span class="badge">update</span> this service</div>
     </div>
     <BaseProgressBar v-if="isCreatingService" />
     <div class="create-service-statistics-header">
       <div class="title">
         <span class="ri-bar-chart-line"></span>
-        Service Statistics
-        <span class="wave" @click="showStatistics = !showStatistics">
+        <span v-if="!service.name">Service Statistics</span>
+        <span v-if="service.name">Service Addition Information</span>
+        <span class="wave" style="cursor: pointer" @click="showStatistics = !showStatistics">
           <span v-show="showStatistics === false">+</span>
           <span v-show="showStatistics">-</span>
         </span>
       </div>
     </div>
     <transition name="slide-fade">
-      <div class="create-service-statistics" v-if="showStatistics">
+      <div class="create-service-statistics" v-if="showStatistics && !service.name">
         <div
             :class="['statistics', 'sunday', getSundayServices === 0 ? 'opacity-50' : getSundayServices === 1 ? 'opacity-70' : '']">
           <div class="day">SUN</div>
@@ -56,6 +58,12 @@
         </div>
       </div>
     </transition>
+    <transition name="slide-fade">
+      <div v-if="showStatistics && service.name" class="create-service-statistics">
+        <div><span class="badge">Created On</span><b>{{service.createdOn}}</b></div>
+        <div><span class="badge">Updated On</span><b>{{service.updateOn}}</b></div>
+      </div>
+    </transition>
     <div class="create-service-content" :style="showStatistics === false ? 'max-height: calc(95% - 1rem);' : ''">
       <form method="POST" @submit.prevent="createNewService" novalidate>
         <BaseInput
@@ -63,24 +71,27 @@
             label="What name would you like to call this service?"
             name="service-name"
             :reset="reset"
+            :value="service.name"
         />
         <BaseInput
             type="number"
             label="How many seats are reserved for the service?"
             name="service-seats"
             :reset="reset"
+            :value="service.numberOfSeats"
         />
         <BaseInput
             type="time"
             label="When will the service begin?"
             name="service-time"
             :reset="reset"
+            :value="service.time"
         />
         <BaseInput
             type="text"
             label="What day would you have the service on?"
             name="service-day"
-            :value="value"
+            :value="value || service.day"
             @day-from-input="getDay"
             :reset="reset"
         />
@@ -92,14 +103,16 @@
             type="number"
             label="How long would the service last? - in minutes"
             name="service-duration"
-            :value="duration"
+            :value="duration || service.durationInMinutes"
             :reset="reset"
         />
         <BaseSuggestionBox
             :suggestions="suggestions"
             @duration-suggestion="setDuration"
         />
-        <button type="submit" class="create-service-button wave">Proceed to Create Service</button>
+        <button type="submit" class="create-service-button wave">
+          Press to Complete Process
+        </button>
       </form>
     </div>
   </div>
@@ -114,7 +127,7 @@ import BaseProgressBar from "@/components/BaseProgressBar";
 import useService from "@/services/church-management-services/useServicesFactory";
 import useResponseHandlers from "@/utils/responseHandlers";
 import {httpStatusCode} from "@/models/response";
-import {computed, ref} from "vue"
+import {computed, ref, toRefs} from "vue"
 
 export default {
   name: "CreateService",
@@ -126,7 +139,15 @@ export default {
     BaseSuggestionBox,
     BaseProgressBar
   },
-  setup() {
+  props: {
+    service: {
+      default: {},
+      type: Object
+    }
+  },
+  setup(props, { emit }) {
+    const {service} = toRefs(props)
+
     const value = ref("")
     const reset = ref(false)
     const duration = ref("")
@@ -137,27 +158,27 @@ export default {
     const suggestions = ref([
       {
         label: "1 hour",
-        value: 60
+        value: "60"
       },
       {
         label: "1.5 hours",
-        value: 90
+        value: "90"
       },
       {
         label: "2 hours",
-        value: 120
+        value: "120"
       },
       {
         label: "2.5 hours",
-        value: 150
+        value: "150"
       },
       {
         label: "3 hours",
-        value: 180
+        value: "180"
       }
     ])
 
-    const {allServices, createService} = useService()
+    const {allServices, createService, updateService} = useService()
 
     const {createResponse} = useResponseHandlers()
 
@@ -200,6 +221,7 @@ export default {
     const isCreatingService = ref(false)
 
     const createNewService = async (e) => {
+      // console.log("This is the service", service.value)
       isCreatingService.value = true
 
       const serviceName = e.target[0].value
@@ -244,12 +266,21 @@ export default {
       }
 
       if (isValidatedForEmptyInput && isValidatedForValidDay) {
-        await createService(newService)
-            .then(_ => {
-              isCreatingService.value = false
-              // Reset fields
-              reset.value = true
-            })
+        if (service.value.id) {
+          // Update Service
+          await updateService({...newService, id: service.value.id})
+              .then(_ => {
+                isCreatingService.value = false
+                emit('closepanel')
+              })
+        } else {
+          await createService(newService)
+              .then(_ => {
+                isCreatingService.value = false
+                // Reset fields
+                reset.value = true
+              })
+        }
       } else {
         isCreatingService.value = false
       }
@@ -271,6 +302,7 @@ export default {
       showStatistics,
       isCreatingService,
       reset,
+      service,
       setDay,
       getDay,
       setDuration,
@@ -295,9 +327,9 @@ export default {
 
 
     .title {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       color: color(primary);
-      font-weight: bold;
+      font-weight: bolder;
       padding: .25rem 2rem;
 
       .badge {
@@ -349,6 +381,15 @@ export default {
 
     @media screen and (max-width: $small-screen) {
       display: none;
+    }
+    // Remove Duplicates
+    .badge {
+      font: inherit;
+      padding: .25rem .5rem;
+      color: color(lighter);
+      background: color(primary-light);
+      border-radius: .25rem;
+      margin: 0 1rem 0 2rem;
     }
 
     .statistics {
@@ -443,14 +484,5 @@ export default {
 }
 .opacity-70 {
   opacity: .7;
-}
-.slide-fade-enter-from,
-.slide-fade-leave-to{
-  height: 0 !important;
-  opacity: 0;
-}
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all 50ms ease-in;
 }
 </style>

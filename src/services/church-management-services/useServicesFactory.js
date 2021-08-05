@@ -30,6 +30,33 @@ const allServices = ref([])
         }
 
     }
+
+    // Update a service
+    const updateService = async (serviceToUpdate) => {
+        try {
+            await fetch(`${process.env.VUE_APP_CMS_API}/services/${serviceToUpdate.id}`, {
+                method: "PUT",
+                headers: {
+                    "traceId": "b3d16f0b-8d51-4ecd-b8b4-f8a890bd26d2",
+                    "request-type": "string",
+                    "merchantNamespace": "dp0f2",
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify(serviceToUpdate)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    createResponse(data.data.uiMessage, httpStatusCode.SUCCESS)
+                    allServices.value = allServices.value.map(service => {
+                        return service?.id === serviceToUpdate.id ? data.data : service
+                    })
+            })
+        } catch (e) {
+            createResponse('Failed to update service', 400)
+            throw e
+        }
+    }
+
     // Delete a service
     const {createResponse} = useResponseHandlers()
     const deleteService = async (serviceId) => {
@@ -79,13 +106,14 @@ const allServices = ref([])
         numberOfServices,
         fetchAllServices,
         deleteService,
-        createService
+        createService,
+        updateService
     }
 }*/
 
 // For json server
 export default function useService() {
-    // Create services
+    // Create a service
     const createService = async (newService) => {
         try {
             await fetch(`${process.env.VUE_APP_CMS_LOCAL_API}/services`, {
@@ -96,7 +124,7 @@ export default function useService() {
                     "merchantNamespace": "dp0f2",
                     "Content-type": "application/json"
                 },
-                body: JSON.stringify({...newService, createdOn: "1", updateOn: "1"})
+                body: JSON.stringify({...newService, createdOn: `1`, updateOn: `1`})
             })
                 .then(res => res.json())
                 .then(data => {
@@ -109,6 +137,31 @@ export default function useService() {
         }
 
     }
+
+    // Update a service
+    const updateService = async (serviceToUpdate) => {
+        try {
+            await fetch(`${process.env.VUE_APP_CMS_LOCAL_API}/services/${serviceToUpdate.id}`, {
+                method: "PUT",
+                headers: {
+                    "traceId": "b3d16f0b-8d51-4ecd-b8b4-f8a890bd26d2",
+                    "request-type": "string",
+                    "merchantNamespace": "dp0f2",
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify({...serviceToUpdate, updatedOn: `2`})
+            }).then(res => res.json()).then(data => {
+                createResponse("Service updated Successfully", httpStatusCode.SUCCESS)
+                allServices.value = allServices.value.map(service => {
+                    return service?.id === serviceToUpdate.id ? data : service
+                })
+            })
+        } catch (e) {
+            createResponse('Failed to update service', 400)
+            throw e
+        }
+    }
+
     // Delete a service
     const {createResponse} = useResponseHandlers()
     const deleteService = async (serviceId) => {
@@ -158,6 +211,7 @@ export default function useService() {
         numberOfServices,
         fetchAllServices,
         deleteService,
-        createService
+        createService,
+        updateService
     }
 }

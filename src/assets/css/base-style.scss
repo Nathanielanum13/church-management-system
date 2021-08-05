@@ -71,7 +71,7 @@ $theme: (
     height: auto;
 
     position: absolute;
-    top: 200%;
+    top: 300%;
     left: 50%;
 
     transform: translateX(-50%);
@@ -296,6 +296,26 @@ code {
 .fade-and-scale-leave-active,
 .fade-and-scale-enter-active{
   transition: all 150ms ease-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to{
+  height: 0 !important;
+  opacity: 0;
+}
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 50ms ease-in;
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 1s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }
 
 @keyframes slide-down {

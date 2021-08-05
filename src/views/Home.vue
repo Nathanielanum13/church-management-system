@@ -153,6 +153,13 @@ export default {
       toggleState.value
           ? main.value.style.animation = 'slide-down 50ms forwards'
           : main.value.style.animation = 'slide-up 50ms forwards'
+      document.body.onresize = function (e) {
+        if (e.target.innerWidth > 567) {
+          toggleState.value
+              ? main.value.style.animation = 'slide-down 50ms forwards'
+              : main.value.style.animation = 'slide-up 50ms forwards'
+        }
+      }
     })
 
     const showTooltip = computed(() => toggleState.value ? 'label' : '')
@@ -198,7 +205,7 @@ export default {
     position: relative;
 
     .drawer-content {
-      padding: 3rem;
+      padding: 3rem 1rem;
       margin: 0;
       flex: 1 1 90%;
 
@@ -238,7 +245,7 @@ export default {
       }
 
       @media screen and (max-width: $medium-screen) {
-        padding: 1rem;
+        padding: 5rem 1rem;
       }
     }
 
