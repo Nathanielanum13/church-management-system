@@ -1,4 +1,8 @@
-# new
+# Church Management Application
+
+![Dashboard](demo/dashboard-closed.png)
+
+![Dashboard](demo/dashboard-open.png)
 
 ## Project setup
 ```
@@ -9,6 +13,13 @@ npm install
 ```
 npm run serve
 ```
+
+`NB` Incase you encounter an error with `digital envelope routines::unsupported`, enable the `--openssl-legacy-provider` option in NODE
+and then run `npm run serve`
+
+```bash
+export NODE_OPTIONS=--openssl-legacy-provider
+``` 
 
 ### Compiles and minifies for production
 ```
